@@ -3,6 +3,7 @@
 **Instructor:** Florentin Guth
 
 Course notes for a proof-based course covering linear algebra (first 2/3) and optimization (last 1/3).
+[Course Notes (PDF)](notes/pdf/main.pdf)
 
 ## Topics
 
