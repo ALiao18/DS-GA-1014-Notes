@@ -1,0 +1,236 @@
+% !TEX root = ../main.tex
+\section{Linear Transformations and Matrices}
+
+\subsection{Review}
+There are 2 interpretations of vectors: geometric and numerical. These two interpretations \textit{bridge the abstract world and algorithmic world}.
+\begin{itemize}
+    \item The \textit{geometric world} provides the vectors, which contain scale and directionality.
+    \item The \textit{numerical world} provides the basis, which are the coordinates to project the vectors to.
+    \begin{itemize}
+        \item Let basis be $e_{1},e_{2},\dots,e_{n}$.
+        \item $\vec{v} =v_{1}e_{1}+v_{2}e_{2}+\dots+v_{n}e_{n}$.
+    \end{itemize}
+\end{itemize}
+
+In $\mathbb{R}^n$ with the canonical basis, it is trivial because $\vec{v}=(v_{1},\dots,v_{n})=v_{1}\vec{e_{1}}+\dots+v_{n}\vec{e_{n}}$.
+However, when the vectors are functions, since they don't live in $\mathbb{R}^n$, they don't really have components and the $\mathbb{R}^n$ vector geometric interpretation is invalid.
+However, we can still describe the coordinates of a function in a given basis.
+It is key to distinguish the two.
+
+\subsection{Linear Transformations}
+\textit{Geometric interpretation:} operations done on vectors with linear properties.
+\textit{Numerical interpretation:} arrays of numbers, aka matrices.
+
+\subsubsection{Definition}
+Symmetries and rotations are linear mappings. So they are functions from vectors to vectors.
+\begin{align}
+L:\quad\mathbb{R}^2 & \to\quad\mathbb{R}^2 \\
+v & \mapsto\quad L(v)
+\end{align}
+
+\begin{definition}[Linear Transformation]
+    A function $L: \mathbb{R}^m \to \mathbb{R}^n$ is linear $\iff$
+    \begin{enumerate}
+        \item Closed under addition: $\forall v, w \in \mathbb{R}^m, L(v+w)=L(v)+L(w)$
+        \item Closed under scalar multiplication: $\forall v \in \mathbb{R}^m, \alpha \in \mathbb{R}, L(\alpha v)=\alpha L(v)$
+    \end{enumerate}
+\end{definition}
+
+\noindent Note:
+\begin{enumerate}
+    \item They don't have to be in the same vector space!
+    \item They are transformations that comply with closure under linear combinations.
+\end{enumerate}
+
+\subsubsection*{Examples}
+
+\textbf{1. $\mathbb{R}^2 \to \mathbb{R}^3$ linear transformation:}
+\begin{align}
+L:\quad\mathbb{R}^2 & \to\quad\mathbb{R}^3 \\
+(v_{1}, v_{2}) & \mapsto\quad (5v_{1}, 0, v_{1}+v_{2})
+\end{align}
+
+\begin{proof}
+    \textbf{Closure under addition:} Let $(v_{1}, v_{2}), (w_{1},w_{2}) \in \mathbb{R}^2$.
+    \begin{align}
+    L(v+w)&=L((v_{1}+w_{1}), (v_{2}+w_{2})) \\
+    &=(5(v_{1}+w_{1}), 0, (v_{1}+w_{1})+(v_{2}+w_{2})) \\
+    &=(5v_{1},0,v_{1}+v_{2})+(5w_{1},0,w_{1}+w_{2}) \\
+    &=L(v)+L(w)
+    \end{align}
+    \textbf{Closure under scalar multiplication:} Let $(v_{1},v_{2}) \in \mathbb{R}^2, \lambda \in \mathbb{R}$.
+    \begin{align}
+    L(\lambda v) &= L(\lambda v_{1}, \lambda v_{2}) \\
+    &= (5\lambda v_{1}, 0, \lambda(v_{1}+v_{2})) \\
+    &=\lambda(5v_{1}, 0, (v_{1}+v_{2}))  \\
+    &=\lambda L(v)
+    \end{align}
+    $\therefore L$ is a linear transformation.
+\end{proof}
+
+\textbf{2. $\mathbb{R} \to \mathbb{R}$ non-linear transformation:}
+\begin{align}
+L:\quad \mathbb{R} &\to \mathbb{R} \\
+x &\mapsto\quad x^2
+\end{align}
+
+\begin{proof}
+    Closure under addition: Let $(v_{1}), (w_{1}) \in \mathbb{R}$.
+    \begin{align}
+    L(v+w)&=(v_{1}+w_{1})^2 \\
+    &=v_{1}^2+w_{1}^2+2vw \\
+    L(v)+L(w)&=v_{1}^2+w_{1}^2
+    \end{align}
+    $\therefore L(v+w) \neq L(v)+L(w)$, so $L$ is not a linear transformation.
+    Or, using a counter example to demonstrate the square of the sums is not equal to the sum of the squares:
+    \begin{align}
+    L(1+2)&=(1+2)^2 = 9 \\
+    L(1)+L(2)&=1+4 = 5
+    \end{align}
+    $5 \neq 9$, therefore $L$ is not a linear transformation.
+\end{proof}
+
+\begin{proposition}[Properties of Linear Maps]
+    Let $L:\mathbb{R}^m \to \mathbb{R}^n$ be linear, then:
+    \begin{enumerate}
+        \item $L(0)=0$:
+        \[ L(0)=L(a-a)=L(a+(-a))=L(a)+L(-a)=L(a)-L(a)=0 \]
+        \item Distributive over addition and scalar multiplication:
+        \[ L\left( \sum_{i=1}^{k} \alpha_{i}v_{i} \right)=\sum_{i=1}^{k}\alpha_{i}L(v_{i}), \quad \forall \alpha_{i} \in \mathbb{R}, v_{i} \in \mathbb{R}^m \]
+        \item Composition of linear maps is also linear. If $L:\mathbb{R}^{m}\to\mathbb{R}^{n}$ and $M:\mathbb{R}^{n}\to\mathbb{R}^{k}$ are both linear, then the composite function is also linear.
+    \end{enumerate}
+\end{proposition}
+
+\subsection{Matrices}
+Let $L: \mathbb{R}^{m} \to \mathbb{R}^{n}$ be a linear transformation and $(e_{1},e_{2},\dots,e_{m})$ be the canonical basis of $\mathbb{R}^{m}$.
+Then, for all $x=(x_{1},\dots,x_{m}) \in \mathbb{R}^{m}$:
+\begin{align}
+x &= (x_{1}, 0,\dots,0)+(0, x_{2},\dots,0)+\dots+(0,\dots,0, x_{m}) \\
+&= x_{1}e_{1}+x_{2}e_{2}+\dots+x_{m}e_{m}
+\end{align}
+Then,
+\begin{align}
+L(x)&=L\left( \sum_{i=1}^{m}x_{i}e_{i} \right)=\sum_{i=1}^{m}x_{i}L(e_{i})
+\end{align}
+From the vectors $L(e_{1}),\dots,L(e_{m}) \in \mathbb{R}^{n}$, we can compute all $L(x) \quad \forall x \in \mathbb{R}^{m}$, meaning once we know what a linear transformation does to a basis, we know what it does to every possible vector.
+So, \textbf{a linear map is determined by its action on a basis}.
+
+\begin{idea}
+\textbf{Why matrices are basically a change in basis:} First, decompose any input vector into any basis of the input space.
+Then, apply the linear map to the basis in the input space.
+You get vectors in the output space, where you decompose them into any basis of the output space.
+You end up with an array that tells you everything you need to know about the linear mapping.
+\end{idea}
+
+\begin{definition}[Matrix]
+    An $n \times m$ matrix is an array with $n$ rows and $m$ columns.
+    We denote by $\mathbb{R}^{n\times m}$ the set of all $n \times m$ matrices.
+\end{definition}
+
+\begin{definition}[Canonical Matrix of a linear map]
+    We can encode a linear map $L: \mathbb{R}^{m} \to \mathbb{R}^{n}$ by a $n \times m$ matrix.
+    The canonical matrix of $L$ is the $n \times m$ matrix $\tilde{L}$ whose columns are $L(e_{1}),\dots,L(e_{m})$.
+    \begin{align}
+    \tilde{L} = \begin{pmatrix} | & | & \cdots & | \\
+                                   L(e_1) & L(e_2) & \cdots & L(e_m) \\
+                                   | & | & \cdots & |  \\
+                   \end{pmatrix} &=
+                   \begin{pmatrix} L_{1,1} & L_{1,2} & \cdots & L_{1,m} \\
+                                   L_{2,1} & L_{2,2} & \cdots & L_{2,m} \\
+                                   \vdots & \vdots & \ddots & \vdots \\
+                                   L_{n,1} & L_{n,2} & \cdots & L_{n,m}  \\
+                  \end{pmatrix}
+    \end{align}
+    Where we write $L(e_{j}) = (L_{1,j}, L_{2,j}, \dots, L_{n,j})^{\top}$.
+\end{definition}
+
+\subsubsection*{Examples}
+\begin{enumerate}
+    \item \textbf{Identity matrix $I$:}
+    \begin{align}
+    \tilde{L} = \begin{pmatrix} | & | \\ L(1,0) & L(0, 1) \\ | & | \end{pmatrix} &= \begin{pmatrix} 5\times 1 & 5 \times 0 \\ 0 & 0 \\ 1+0 & 0+1 \end{pmatrix} \\
+    \tilde{Id} &= Id
+    \end{align}
+
+    \item \textbf{Homothety (Scale):} Let $\lambda \in \mathbb{R}$. The homothety map of ratio $\lambda$ is linear.
+    \begin{align}
+    H_{\lambda}(e_{1}) &= \lambda(e_{1}), \dots, H_{\lambda}(e_{n})=\lambda e_{n} \\
+    \tilde{H_{\lambda}} &= \begin{bmatrix} \lambda & 0 & \dots & 0 \\ 0 & \lambda & \dots & 0 \\ \vdots & \vdots & \ddots & \vdots \\ 0 & 0 & \dots & \lambda  \end{bmatrix} = \lambda I_{n}
+    \end{align}
+
+    \item \textbf{Rotations in $\mathbb{R}^{2}$:} Let $\theta \in \mathbb{R}$. The rotation $\mathbb{R}_{\theta}:\mathbb{R}^{2} \to \mathbb{R}^{2}$ of angle $\theta$ about the origin is linear.
+    \begin{align}
+    \mathbb{R}_{\theta}(e_{1})&=(cos \theta, sin \theta)  \\
+    \mathbb{R}_{\theta}(e_{2})&=(-sin \theta, cos \theta) \\
+    \tilde{\mathbb{R}_{\theta}}&=\begin{pmatrix} cos \theta & sin \theta \\ -sin \theta & cos \theta  \end{pmatrix}
+    \end{align}
+\end{enumerate}
+
+\begin{proposition}[Matrix-Vector Product]
+    Consider a linear map $L: \mathbb{R}^{m} \to \mathbb{R}^{n}$ and its associated matrix $\tilde{L}\in\mathbb{R}^{n\times m}$.
+    \begin{align}
+    L(x)_{i} &=L\left( \sum_{j}^{}x_{j}e_{j} \right)_{i} \\
+    &=\left( \sum_{j}^{}x_{j}L(e_{j}) \right)_{i} = \sum_{j}^{}x_{j} L(e_{j})_{i} = \sum_{j}^{}\tilde{L}_{ij}x_{j}
+    \end{align}
+    So, for all $x \in \mathbb{R}^{m}$ we have $L(x)=\tilde{L}x$.
+    Each element in the output matrix corresponds to the weighted sum of a row in the input matrix and the vector such that the vector is the scaling factor.
+\end{proposition}
+
+\subsection{Matrix operations}
+\begin{enumerate}
+    \item \textbf{Addition and Scalar Multiplication:} Since matrices are linear maps, they form a vector space $\mathbb{R}^{n \times m}$ with dimension $n \times m$.
+    \item \textbf{Matrix Product:} The matrix product $ML$ is the $k\times n$ matrix of the linear map $M \circ L$.
+    \begin{align}
+    (ML)_{i,j}=\sum_{l=1}^{m}M_{i,l}L_{l,j} \quad \forall 1 \leq i \leq k, 1 \leq j \leq n
+    \end{align}
+    \item \textbf{Properties:}
+    \begin{itemize}
+        \item $(A+B)C=AC+BC$
+        \item $A(C+D)=AC+AD$
+        \item $AId_{m}=A$
+        \item Not commutative: $AB \neq BA$ usually.
+        \item No division: If $AB=AC$, it does not imply $B=C$ (unless $A$ is invertible).
+    \end{itemize}
+\end{enumerate}
+
+\subsubsection{Invertible matrices}
+A square matrix $M \in \mathbb{R}^{n \times n}$ is \textbf{invertible} if there exists a unique matrix $M^{-1}\in\mathbb{R}^{n \times n}$ such that $MM^{-1}=M^{-1}M=Id_{n}$.
+
+\subsection{Kernels and Images}
+
+\begin{definition}[Kernel]
+    The \textbf{kernel} (or nullspace) of $L$ is the set of all vectors $v \in \mathbb{R}^{m}$ such that $L(v)=0$.
+    \[ Ker(L):=\{ v \in \mathbb{R}^{m} \mid L(v)=0\} \]
+    $Ker(L)$ is a subspace of $\mathbb{R}^{m}$.
+\end{definition}
+
+\begin{definition}[Image]
+    The \textbf{image} (aka range, column space) of $L$ is the set of all vectors $v \in \mathbb{R}^{n}$ such that there exists $v \in \mathbb{R}^{m}$ such that $L(v)=v$.
+    \[ Im(L)=\{ L(v)\mid v \in \mathbb{R}^{m} \} \subseteq \mathbb{R}^{n} \]
+    $\mathrm{Im}(L)$ is a subspace of $\mathbb{R}^{n}$.
+\end{definition}
+
+\subsection{Application to ML}
+
+\begin{goal}
+Given data of input-output pairs $\{ (x_{1},y_{1}),\dots,(x_{n},y_{n}) \}$ where $x_{i} \in \mathbb{R}^{m}, y_{i} \in \mathbb{R}$, predict $y$ for a new $x$.
+\end{goal}
+
+\begin{idea}
+\textbf{Hypothesis:} $\exists (\theta_{1},\dots,\theta_{m}) \text{ s.t. } \theta_{1}x_{i,1}+\dots+\theta_{m}x_{i,m}=y_{i}$.
+This forms a system $X\theta=y$.
+\end{idea}
+
+\begin{itemize}
+    \item If $y \not\in \mathrm{Im}(X)$: No solution.
+    \item If $y \in \mathrm{Im}(X)$: At least 1 solution.
+    \item If $Ker(X)=\{ 0 \}$: One unique solution.
+    \item If $Ker(X)\neq \{ 0 \}$: Infinite solutions (Affine space $\theta_{0}+Ker(X)$).
+\end{itemize}
+
+\subsubsection{Gaussian Elimination}
+\textbf{Goal:} To get matrices into row echelon form.
+\textbf{Rules:} You are allowed 3 operations:
+1. Row swap.
+2. Row scale.
+3. Row addition.

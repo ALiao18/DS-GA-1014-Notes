@@ -1,0 +1,133 @@
+% !TEX root = ../main.tex
+\section{Vector Spaces}
+
+\subsection{Vector Spaces}
+
+\begin{definition}[Vector]
+    A \textbf{vector} $\bar{v}$ is a mathematical object defined by the operations of vector addition and scalar multiplication. Vectors have a geometric interpretation as arrows in space and a numerical interpretation as ordered lists of real numbers.
+\end{definition}
+
+\begin{definition}[Vector Space]
+    A \textbf{vector space} $V$ is a set of vectors satisfying the following axioms for all $x,y,z \in V$ and scalars $a,b,c,d \in \mathbb{R}$:
+    \begin{multicols}{2}
+    \begin{enumerate}
+        \item Closure under addition: $x+y \in V$
+        \item Commutativity: $x+y = y+x$
+        \item Associativity: $(x+y)+z = x+(y+z)$
+        \item Additive identity: $\exists\,0 \in V$ such that $x+0=x$
+        \item Additive inverse: $\exists\,(-x)\in V$ such that $x+(-x)=0$
+        \item Closure under scalar multiplication: $cx \in V$
+        \item Compatibility: $c(dx) = (cd)x$
+        \item Multiplicative identity: $1 \cdot x = x$
+        \item Distributivity: $a(x+y)=ax+ay$
+        \item Scalar distributivity: $(a+b)x=ax+bx$
+    \end{enumerate}
+    \end{multicols}
+    Both vectors and vector spaces are defined through operations rather than representation.
+\end{definition}
+
+\begin{definition}[Subspace]
+    A \textbf{subspace} $S\subseteq V$ is a subset that:
+    \begin{enumerate}
+        \item contains the zero vector,
+        \item is closed under vector addition,
+        \item is closed under scalar multiplication.
+    \end{enumerate}
+    If these conditions hold, $S$ is a vector space.
+\end{definition}
+
+\subsubsection*{Examples}
+\begin{itemize}
+    \item $\mathbb{R}^n$ is a subspace of itself.
+    \item $\{0\}$ is a subspace of any vector space.
+    \item Any line through the origin is a subspace of $\mathbb{R}^2$.
+\end{itemize}
+
+\subsection{Span and Linear Dependence}
+
+\begin{definition}[Linear Combination]
+    A vector $y\in V$ is a \textbf{linear combination} of $x_1,\dots,x_k$ if
+    \[
+    y=\sum_{i=1}^{k}\alpha_i x_i,
+    \]
+    for scalars $\alpha_i\in\mathbb{R}$.
+\end{definition}
+
+\begin{definition}[Span]
+    The \textbf{span} of vectors $x_1,\dots,x_n$ is the set of all linear combinations.
+    \[
+    \operatorname{span}(x_1,\dots,x_n)
+    = \{ \alpha_1x_1 + \dots + \alpha_nx_n : \alpha_i\in\mathbb{R}\},
+    \]
+    the smallest subspace of $V$ that contains them.
+\end{definition}
+
+\begin{definition}[Linear Dependence]
+    Vectors $x_1,\dots,x_k$ are \textbf{linearly dependent} if not all scalars
+    $\alpha_1,\dots,\alpha_k$ are zero and
+    \[
+    \alpha_1x_1+\dots+\alpha_kx_k = 0.
+    \]
+    They are \textbf{linearly independent} otherwise.
+\end{definition}
+
+\subsubsection*{Examples}
+\begin{enumerate}
+    \item The set $(x)$ is linearly independent iff $x\neq 0$.
+    \item The set $(x,-x)$ is always linearly dependent because $x + (-x)=0$.
+\end{enumerate}
+
+\subsection{Basis and Dimension}
+
+\begin{definition}[Basis]
+    A family $x_1,\dots,x_n$ is a \textbf{basis} of $V$ if
+    \begin{enumerate}
+        \item $x_1,\dots,x_n$ are linearly independent,
+        \item $\operatorname{span}(x_1,\dots,x_n)=V$.
+    \end{enumerate}
+\end{definition}
+
+\begin{definition}[Dimension]
+    If every basis of $V$ has $n$ vectors, we say $\dim(V)=n$.
+    If no finite basis exists, $\dim(V)=+\infty$.
+\end{definition}
+
+\subsubsection{Properties}
+Let $x_1,\dots,x_n \in V \text{ s.t. } \dim(V)=n$.
+\begin{enumerate}
+    \item If $x_1,\dots,x_n$ are linearly independent, then $x_1,\dots,x_n$ is a basis for $V$ (We get span for free).
+    \item If $Span(x_1,\dots,x_n)=V$, then $(x_1,\dots,x_n)$ is the basis of $V$ (we get linear independence for free).
+\end{enumerate}
+To show that a family of vectors $x_1,\dots,x_k$ form a basis, we need to show:
+\begin{enumerate}
+    \item $k=n$
+    \item linear independence
+    \item $Span(x_1,\dots,x_k)=V$
+\end{enumerate}
+From above we see that showing any 2 properties implies the third one. We can trivially show $k=n$, so we usually choose to show the easier of 2 and 3.
+
+\begin{definition}[Line and Hyperplane]
+    Let $S$ be a subspace.
+    \begin{enumerate}
+        \item If $\dim(S)=1$, $S$ is a \textbf{line}.
+        \item If $\dim(S)=n-1$, $S$ is a \textbf{hyperplane}.
+    \end{enumerate}
+\end{definition}
+
+\subsection{Coordinates of a vector in a basis}
+
+\begin{theorem}[Uniqueness of Coordinates]
+    If $v_1,\dots,v_n$ is a basis of $V$, then for every $x \in V$, there exists a unique vector $(\alpha_1,\dots,\alpha_n) \in \mathbb{R}^n$
+    such that $x = \alpha_1v_1 + \dots + \alpha_n v_n$.
+    We refer to $(\alpha_1,\dots,\alpha_n)$ as the \textbf{coordinates} of $x$.
+\end{theorem}
+
+\begin{proof}
+    $Span(v_1,\dots,v_n) = V$ since it is the basis of $V$.
+    Since $x$ is some linear combination of $v_1,\dots,v_n$, $x \in Span(v_1,\dots,v_n)$.
+    Therefore, there exists some vector $\alpha$ such that the linear combination of $v$ and $\alpha$ is $x$.
+    Suppose there is another set of vectors $\beta_1,\dots,\beta_n$ such that $x$ is a linear combination of $v$ and $\beta$.
+    \[ x - x = (\alpha_1 v_1 + \dots + \alpha_n v_n) - (\beta_1 v_1 + \dots + \beta_n v_n)=0 \]
+    Since $v$ is linearly independent, $\alpha_i = \beta_i$ for $1 \leq i \leq n$.
+    Therefore there is a unique vector in each basis to obtain $x$.
+\end{proof}

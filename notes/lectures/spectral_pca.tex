@@ -1,0 +1,86 @@
+% !TEX root = ../main.tex
+\section{Spectral Theorem and PCA}
+
+\subsection{Spectral Theorem}
+
+\begin{theorem}[Spectral Theorem]
+    Let $A \in \mathbb{R}^{n \times n}$ be a \textbf{symmetric} matrix.
+    Then there is an \textbf{orthonormal basis} of $\mathbb{R}^{n}$ composed of eigenvectors of $A$.
+\end{theorem}
+
+That means if $A$ is symmetric, then there exists an orthonormal basis $(v_{1},\dots,v_{n})$ and $\lambda_{1},\dots, \lambda_{n} \in \mathbb{R}$ such that:
+\begin{align}
+Av_{i}&=\lambda_{i}v_{i} \quad \forall i \in \{ 1,\dots,n \} \\
+AV&=V\Lambda \tag{$\Lambda=diag(\lambda_{1},\dots,\lambda_{n})$} \\
+A&=V\Lambda V^{\top} \tag{Since $V^{\top}=V^{-1}$} \\
+A&=\sum_{i=1}^{n}\lambda_{i}v_{i}v_{i}^{\top}
+\end{align}
+Geometrically, $\lambda_{i}v_{i}v_{i}^{\top}$ is the orthogonal projection onto $v_{i}$ scaled by $\lambda_i$.
+
+\begin{theorem}[Matrix Formulation]
+    Let $A \in \mathbb{R}^{n \times n}$ be a \textbf{symmetric} matrix.
+    Then there exists an orthogonal matrix $P$ and a diagonal matrix $D$ such that $A=PDP^{\top}$.
+\end{theorem}
+
+\subsubsection{The spectral orthonormal basis}
+Why are eigenvectors orthogonal when $A$ is symmetric?
+Let $v,w$ be eigenvectors of $A$ for eigenvalues $\lambda \neq \mu$.
+\begin{align}
+v^{\top}Aw &= v^{\top}(\mu w)=\mu v^{\top} w \\
+           &= v^{\top}A^{\top}w = (Av)^{\top}w=\lambda v^{\top}w
+\end{align}
+Therefore $(\mu-\lambda)v^{\top}w = 0$.
+Since $\mu\neq\lambda$, $v^{\top}w$ must be 0.
+
+\subsubsection{Geometric Interpretation}
+$Ax$ is equivalent to the orthogonal projection of $x$ onto the eigenvector basis, scaled by its corresponding eigenvalue.
+\begin{align}
+Ax &= A\left( \sum_{i=1}^{n} \langle x, v_{i} \rangle v_{i}\right) = \sum_{i=1}^{n} \lambda_{i} \langle x,v_{i}  \rangle v_{i}
+\end{align}
+Operations (Right to Left in $V\Lambda V^{\top}$):
+\begin{enumerate}
+    \item Decompose into eigenvector basis ($V^{\top}$).
+    \item Scale by eigenvalues ($\Lambda$).
+    \item Transform back to standard basis ($V$).
+\end{enumerate}
+
+\subsubsection{Consequences}
+If $A=PDP^{\top}$ for orthogonal $P$:
+\begin{enumerate}
+    \item The rank of $A$ equals the number of non-zero $\lambda_{i}$.
+    \item $A$ is invertible iff $\lambda_{i}\neq 0$ for all $i$. Then $A^{-1}=P\Lambda^{-1}P^{\top}$.
+    \item $Tr(A) = \sum \lambda_i$.
+\end{enumerate}
+
+\subsection{Principal Component Analysis (PCA)}
+
+\subsubsection{Empirical mean and covariance}
+Consider a dataset $a_{1},\dots,a_{n} \in \mathbb{R}^{d}$.
+\begin{itemize}
+    \item \textbf{Mean:} $\mu=\frac{1}{n}\sum_{i=1}^{n}a_{i}$.
+    \item \textbf{Covariance Matrix:} $\Sigma = \frac{1}{n}\sum_{i=1}^{n}(a_{i}-\mu)(a_{i}-\mu)^{\top}$.
+\end{itemize}
+It describes the variance in all possible unit directions.
+
+\subsubsection{PCA Algorithm}
+\begin{goal}
+Find a lower dimensional representation $\tilde{a}_{1},\dots\tilde{a}_{n} \in \mathbb{R}^{k}$ where $k \ll d$.
+\end{goal}
+
+Assume centered data ($\mu=0$).
+Then $\Sigma \propto \sum a_i a_i^{\top} = A^{\top}A$, which is symmetric. We can apply the Spectral Theorem.
+
+\begin{idea}
+    \textbf{Direction of maximal variance:}
+    We aim to find $u$ where variance is maximal.
+    This corresponds to the eigenvector associated with the largest eigenvalue of the covariance matrix.
+\end{idea}
+
+The $j$-th direction of maximal variance is $v_{j}$, the eigenvector corresponding to the $j$-th largest eigenvalue.
+The dimensionally reduced dataset is the projection onto these first $k$ eigenvectors.
+
+\subsubsection{Choosing $k$}
+\begin{enumerate}
+    \item \textbf{Elbow rule:} Eyeballing where there is a sharp decrease in explained variance.
+    \item \textbf{Percentage threshold:} Keep enough components to explain $x\%$ of total variance.
+\end{enumerate}

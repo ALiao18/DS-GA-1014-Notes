@@ -1,0 +1,110 @@
+% !TEX root = ../main.tex
+\section{Orthogonal Matrices}
+
+\subsection{Gram-Schmidt Algorithm}
+
+\begin{goal}
+\textbf{Purpose:} How to create an orthonormal basis?
+The Gram-Schmidt process takes as:
+\begin{itemize}
+    \item \textbf{Input:} A linearly independent family $(x_{1},\dots,x_{k})$ of $\mathbb{R}^{n}$.
+    \item \textbf{Output:} An orthonormal basis $v_{1},\dots,v_{k}$ of $Span(x_{1},\dots,x_{k})$.
+\end{itemize}
+\end{goal}
+
+\begin{corollary}
+    Every subspace of $\mathbb{R}^{n}$ admits an orthonormal basis.
+\end{corollary}
+
+We need to do 2 things: normalize each vector, and remove the projection of each vector onto every other vector (project onto the complement).
+
+\begin{solution}
+For example, let there be $x_{1}, x_{2}$.
+\begin{align}
+v_{1}&=\frac{x_{1}}{\lVert x_{1} \rVert } \\
+\tilde{v_{2}}&=x_{2}-\langle x_{2},v_{1}  \rangle v_{1} \\
+v_{2}&=\frac{\tilde{v_{2}}}{\lVert \tilde{v_{2}} \rVert }
+\end{align}
+We check orthogonality: $\langle \tilde{v_{2}},v_{1}  \rangle = \langle x_{2}, v_{1} \rangle - \langle x_{2},v_{1}  \rangle \langle v_{1}, v_{1} \rangle = 0$.
+$\tilde{v_{2}}$ cannot be 0 because it is 0 iff $v_{2} \not\perp v_{1}$ (which implies dependence).
+\end{solution}
+
+\begin{idea}
+Using this, we can find $A=QR$ where $Q$ is an orthogonal matrix and $R$ is an upper triangular matrix.
+\end{idea}
+
+\subsubsection{Gram-Schmidt construction}
+The Gram-Schmidt process is a recursive algorithm that constructs $v_{1},\dots,v_{k}$ such that for all $i \in \{ 1,\dots,k \}$:
+\[ Span(v_{1},\dots,v_{i}) = Span(x_{1},\dots,x_{i}) \]
+where $(v_{1},\dots,v_{i})$ is an orthogonal family.
+
+\subsection{Orthogonal Matrices}
+
+\begin{definition}[Orthogonal Matrix]
+    A matrix $A \in \mathbb{R}^{n \times n}$ is called an \textbf{orthogonal matrix} if its columns are an orthonormal family.
+\end{definition}
+
+\begin{proposition}
+    Let $A \in \mathbb{R}^{n \times n}$. The following points are equivalent:
+    \begin{enumerate}
+        \item $A$ is orthogonal.
+        \item $A^{\top}A=Id_{n}$.
+        \item $AA^{\top}=Id_{n}$.
+    \end{enumerate}
+\end{proposition}
+
+\subsubsection{Orthogonal matrices and norm}
+
+\begin{proposition}[Preservation of Norms]
+    Let $A \in \mathbb{R}^{n \times n}$ be an orthogonal matrix. Then $A$ preserves the dot product:
+    \[ \forall x, y \in \mathbb{R}^{n}, \quad \langle Ax,Ay  \rangle = \langle x,y  \rangle \]
+    In particular if we take $x=y$ we see that $A$ preserves the Euclidean norm: $\lVert Ax \rVert=\lVert x \rVert$.
+\end{proposition}
+
+\begin{proof}
+\begin{align}
+\langle Ax,Ay  \rangle &= (Ax)^{\top}(Ay) \\
+&=x^{\top}A^{\top}Ay \\
+&=x^{\top}y \\
+&=\langle x,y  \rangle
+\end{align}
+\end{proof}
+
+\subsubsection*{Example: Rotations and Reflections}
+Let $R_{\theta}$ be a rotation by angle $\theta$:
+\[ R_{\theta}=\begin{pmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{pmatrix} \]
+Let $S$ be a reflection:
+\[ S = \begin{pmatrix} 1 & 0 \\ 0 & -1 \end{pmatrix} \]
+These are the only types of orthogonal matrices in $\mathbb{R}^2$.
+
+\subsection{Orthonormal Bases}
+Let $(a_{1},\dots,a_{n})$ be an orthonormal basis of $\mathbb{R}^{n}$, and $A$ the matrix collecting these vectors.
+Consider $x$ where coordinates are in the canonical basis.
+
+\begin{proposition}[Change of Basis]
+    The coordinates of $x$ in the $(a_{1},\dots,a_{n})$ basis are given by $x'=A^{\top}x$.
+\end{proposition}
+
+\begin{idea}
+Usually finding the orthonormal bases requires solving a linear system (finding the inverse).
+The general formula is $x'=A^{-1}x$, but $A^{-1}=A^{\top} \iff$ $A$ is an orthogonal matrix.
+\end{idea}
+
+\subsection{Eigenvalues and Eigenvectors}
+
+\begin{definition}[Eigenvector and Eigenvalue]
+    Let $A \in \mathbb{R}^{n \times n}$. A non-zero vector $v \in \mathbb{R}^{n}$ is said to be an \textbf{eigenvector} of $A$ if $\exists \lambda \in \mathbb{R}$ such that $Av=\lambda v$. The scalar $\lambda$ is then called an \textbf{eigenvalue} of $A$.
+\end{definition}
+
+\subsubsection*{Examples}
+\begin{enumerate}
+    \item \textbf{Identity matrix:} Any non-zero vector $v$ is an eigenvector of $Id$ with $\lambda =1$.
+    \item \textbf{Matrix with Kernel:} The eigenvectors for eigenvalue 0 are $Ker(A) \setminus \{ 0 \}$. If 0 is an eigenvalue, $A$ is not invertible.
+\end{enumerate}
+
+\subsubsection{Orthogonal Projection}
+Let $P_{S}(x)$ be an orthogonal projection onto subspace $S$.
+\begin{itemize}
+    \item If $x \in S \setminus \{ 0 \}$, $x$ is an eigenvector with eigenvalue 1 ($P_{S}(s)=x$).
+    \item If $x \in S^\perp \setminus \{ 0 \}$, $x$ is an eigenvector with eigenvalue 0 ($P_{S}(x)=0$).
+\end{itemize}

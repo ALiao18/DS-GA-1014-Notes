@@ -1,0 +1,92 @@
+% !TEX root = ../main.tex
+\section{Convexity}
+
+\begin{goal}
+\textbf{Motivation:} In machine learning, we often minimize functions $f(\theta)=Loss(data, model_{\theta})$.
+For higher dimensions, we rely on local searches (derivatives). Local information gives global information when the function is \textit{convex}.
+\end{goal}
+
+\subsection{Functions of n Variables}
+
+\subsubsection{Single Variable ($n=1$)}
+We define the tangent using the derivative.
+\textbf{First-Order Taylor Approximation:}
+\[ f(x_{0}+h)=f(x_{0})+h\cdot f'(x_{0}) + o(h) \]
+
+\subsubsection{General Case ($n$ Variables)}
+$f: \mathbb{R}^n \rightarrow \mathbb{R}$. We define the gradient:
+\[ \nabla f(x)=\left( \frac{\partial{f}}{\partial{x_{1}}}(x), \dots, \frac{\partial{f}}{\partial{x_{n}}}(x)\right) \]
+Taylor approximation:
+\[ f(x+h) \approx f(x) +\langle \nabla f(x),h  \rangle \]
+
+\begin{definition}[Jacobian Matrix]
+    For vector-valued functions $f: \mathbb{R}^{n} \rightarrow \mathbb{R}^m$, the \textbf{Jacobian} $\mathbf{J}(x)$ is an $m \times n$ matrix where the $i$-th row is $\nabla f_i(x)$.
+\end{definition}
+
+\begin{definition}[Hessian Matrix]
+    For scalar-valued functions $f: \mathbb{R}^n \rightarrow \mathbb{R}$, the \textbf{Hessian} is the matrix of second derivatives:
+    \[ H(x) = \nabla^2f(x) \in \mathbb{R}^{n \times n} \quad \text{where} \quad H_{ij} = \frac{\partial^2 f}{\partial x_i \partial x_j} \]
+\end{definition}
+
+\begin{theorem}[Schwarz's Theorem]
+    If $f: \mathbb{R}^n \rightarrow \mathbb{R}$ is twice differentiable with continuous second partial derivatives, then the Hessian is symmetric:
+    \[ \frac{\partial^2 f}{\partial x_i \partial x_j} = \frac{\partial^2 f}{\partial x_j \partial x_i} \]
+\end{theorem}
+
+\subsubsection{Taylor's Formula (Second Order)}
+\[ f(x+h)=f(x)+\langle \nabla f(x),h  \rangle + \frac{1}{2}h^{\top}\nabla^{2}f(x)h+o(\lVert h \rVert^2) \]
+
+\subsection{Convexity Definitions}
+
+\subsubsection{Convex Sets}
+\begin{definition}[Convex Set]
+    A set $S \subset \mathbb{R}^n$ is \textbf{convex} if $\forall x,y\in S, \forall \alpha\in [0,1]$,
+    \[ \alpha x + (1-\alpha)y \in S \]
+\end{definition}
+\begin{example}
+    Subspaces of $\mathbb{R}^n$ and Norm balls $B(r)=\{ x \mid \lVert x \rVert \leq r\}$ are convex sets.
+\end{example}
+
+\subsubsection{Convex Functions}
+\begin{definition}[Convex Function]
+    A function $f: \mathbb{R}^n \rightarrow \mathbb{R}$ is \textbf{convex} if $\forall x,y\in \mathbb{R}^n, \forall \alpha\in [0,1]$:
+    \[ f(\alpha x+(1-\alpha)y)\leq \alpha f(x)+(1-\alpha)f(y) \]
+\end{definition}
+Intuitively, the function always curves upwards. $f$ is concave if $-f$ is convex.
+
+\begin{proposition}
+    \begin{enumerate}
+        \item Linear maps are both convex and concave.
+        \item Norms are convex (Triangle Inequality).
+        \item Sum of convex functions is convex.
+    \end{enumerate}
+\end{proposition}
+
+\subsection{Convexity and Derivatives}
+
+\begin{proposition}[Tangents]
+    A differentiable function $f$ is convex $\iff \forall x,y\in \mathbb{R}^n$:
+    \[ f(y)\geq f(x)+\langle \nabla f(x),(y-x)  \rangle \]
+    (The function is always above its tangent).
+\end{proposition}
+
+\begin{corollary}
+    If $f$ is convex and differentiable: $x$ is a global minimizer $\iff \nabla f(x)=0$.
+\end{corollary}
+
+\begin{proposition}[Hessian Condition]
+    Let $f$ be twice-differentiable. Then $f$ is convex $\iff \nabla^{2}f(x)$ is Positive Semi-Definite (PSD) for all $x$.
+\end{proposition}
+
+\subsection{Jensen's Inequality}
+
+\begin{theorem}[Jensen's Inequality]
+    Let $f$ be a convex function. For $x_i \in \mathbb{R}^n$ and weights $\alpha_i \geq 0$ summing to 1:
+    \[ f\left( \sum \alpha_{i}x_{i} \right)\leq\sum \alpha_{i}f(x_{i}) \]
+    For a random variable $X$:
+    \[ f(\mathbb{E}[X])\leq\mathbb{E}[f(X)] \]
+\end{theorem}
+
+\begin{example}[Entropy]
+    For a random variable $X$, entropy is $H(X)=\sum p_{i}\log(1/p_i)$. Since $\log$ is concave, Jensen's inequality applies in reverse, showing $H(X) \leq \log(k)$ (Uniform distribution maximizes entropy).
+\end{example}

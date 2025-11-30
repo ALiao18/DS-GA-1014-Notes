@@ -1,0 +1,268 @@
+% !TEX root = ../main.tex
+\section{Linear Regression}
+
+\subsection{Introduction}
+
+\begin{goal}
+    Given feature vectors $x_1,\dots,x_n \in \mathbb{R}^d$ and outputs
+    $y_1,\dots,y_n \in \mathbb{R}$, predict $y$ for a new input $a \in \mathbb{R}^d$.
+\end{goal}
+
+\begin{subgoal}
+    Find $x \in \mathbb{R}^d$ such that $y_i=\langle x,a_i \rangle+b$.
+\end{subgoal}
+
+We can include the additive constant $b$ by making the first coordinate 1:
+\begin{align}
+    a_i \rightarrow \tilde{a}_i &= (a_i, 1) \in \mathbb{R}^{d+1} \\
+    \tilde{x} &\in \mathbb{R}^{d+1} \\
+    \langle \tilde{x}, \tilde{a}_i \rangle
+        &= \sum_{j=1}^{d} (\tilde{x}_j \cdot \tilde{a}_{i,j}) + \tilde{x}_{d+1} \\
+        &= \langle x, a \rangle + b
+\end{align}
+
+\begin{subgoal}
+    Solve for $x$ in $y=Ax$ where $A$ is the feature matrix (including bias) and $x$ is the parameters.
+\end{subgoal}
+
+We assume that $A$ is \textbf{full rank:} $rank(A)=\min(n,d)$. 3 things could happen:
+\begin{itemize}
+    \item $n=d$ (square system): single solution $x=A^{-1}y$.
+    \item $n>d$ (overdetermined system): typically no solution. Since $rank(A)=d<n$, $dim(Im(A))=d<n$. So the image of $A$ is a $d$-dimensional subspace of $\mathbb{R}^{n \times d}$, so $y$ is typically not in $Im(A)$ because there is noise. The challenge here is to find an \textbf{approximate solution}.
+    \item $n<d$ (underdetermined system): infinitely many solutions. By the Rank-Nullity theorem, $dim(Ker(A))=d-n>0$. The challenge is to find the \textbf{best solution among many}.
+\end{itemize}
+
+\subsection{Ordinary least squares}
+\subsubsection{Overdetermined case ($n>d$)}
+
+In the overdetermined case, how do you choose the approximate solution if there is no solution?
+The usual way is to minimize the error. This translates to minimizing some norm.
+Typically, we minimize the square norm because it is a smooth, differentiable, convex function and mathematically equivalent to minimizing the norm itself.
+
+\begin{goal}
+    (OLS) $\min_{x} f(x)=\lVert Ax-y \rVert^2$  w.r.t. $x \in \mathbb{R}^d$.
+\end{goal}
+
+$f$ is convex $(\nabla^2f(x))=2A^{\top}A$, which is PSD. Therefore we can find the global minima by solving for $x$ where the gradient is 0.
+\begin{align}
+    \text{x minimizes }f &\iff \nabla f(x) = 0 \\
+                        &\iff 2A^{\top}(Ax-y) = 0 \\
+                        &\iff A^{\top}Ax = A^{\top}y
+\end{align}
+
+Since $n > d$, and $A^{\top}A \in \mathbb{R}^{d \times d}$, $A^{\top}A$ is full rank, and thus has an inverse. Thus:
+
+\begin{subgoal}
+    Solve closed form solution $x=(A^{\top}A)^{-1}A^{\top}Ay$ (when $n > d$).
+\end{subgoal}
+
+\subsubsection{Underdetermined case ($n<d$)}
+
+In the underdetermined case, there are infinitely many solutions. How then do we pick the "best solution"?
+Note that this is an empirical solution since we're grappling with philosophical approximations here. Good ol' Occam's Razor.
+
+\begin{idea}
+    Pick the most "stable solution". Stable meaning the solution changes the least while undergoing some perturbation. Among all $x \text{ s.t. } Ax=y$, pick the least normed one.
+    All solutions lie on an affine subspace (a line in 2D, a hyperplane in general). The minimum norm solution $x^*$ is the point on this subspace \textbf{closest to the origin}, found by dropping a perpendicular from the origin to the solution set.
+\end{idea}
+
+Let $\delta a$ denote some perturbation of $a$.
+\begin{align}
+    y_{pred} &= \langle a + \delta a, x \rangle = \langle a, x \rangle + \langle \delta a, x \rangle \\
+    \lVert y_{pred} - \langle a, x \rangle \rVert  &= |\langle \delta a, x \rangle| \leq \lVert \delta a \rVert \cdot \lVert x \rVert \tag{\text{Cauchy-Schwarz}} \\
+\end{align}
+
+We see that the error is bounded by the Cauchy Schwarz inequality. Thus the way to minimize errors under perturbation is to minimize $\lVert x \rVert$.
+\textbf{In general,} The solution set $\{x : Ax = y\}$ forms an affine subspace (hyperplane shifted away from origin). The minimum norm solution $x^*$
+is found by projecting the origin \textbf{orthogonally} onto this hyperplane.
+
+\begin{goal}
+    (Underdetermined OLS) Minimize $\lVert x \rVert^2$ subject to $\lVert Ax-y \rVert^2$ being minimum.
+\end{goal}
+
+\begin{solution}
+We can use the solution from the previous section, $A^{\top}Ax=A^{\top}y$, except now $A^{\top}A$ is no longer invertible. \\
+\begin{align}
+    \text{Let } A &= USV^{\top} \tag{\text{SVD}} \\
+    A^{\top}Ax = A^{\top}y \rightarrow (USV^{\top})^{\top}(USV^{\top})x &= (USV^{\top})^{\top} y \\
+    VS^{\top}U^{\top}USV^{\top}x &= VS^{\top}U^{\top}y \tag{\text{U is orthogonal}}\\
+    S^2V^{\top}x &= SU^{\top}y \\
+    \text{so each individual component: } \sigma_i^2 \langle v_i,x \rangle &= \sigma_i \langle u_i, y \rangle \\
+    \langle v_i, x \rangle &=
+    \begin{cases}
+        \frac{1}{\sigma_i}\langle u_i, y \rangle &  \text{if } \sigma_i > 0 \\
+        \text{free} & \text{if } \sigma_i = 0
+    \end{cases}
+\end{align}
+
+Since $\lVert x \rVert^2 = \sum \langle x, v_i \rangle^2$, using the most ``stable'' approach, we minimize the norm by setting $\langle x, v_i \rangle$ to 0 if the singular value is zero.
+Since the system is underdetermined, $A$ cannot have full column rank. In its SVD $A = USV^{\top}$, the diagonal matrix $S$ therefore has some zeros on the diagonal and is not invertible.
+To derive a closed form solution, we introduce \textbf{the pseudoinverse} $S^\dagger$ to get $x=VS^{\dagger}U^{\top}y$.
+
+\begin{definition}[Moore-Penrose Pseudoinverse]
+Let $A=USV^{\top}$ be the SVD of $A$. The matrix $A^{\dagger} \stackrel{\text{def}}{=} VS^{\dagger}U^{\top}$ is called the \textbf{(Moore-Penrose) pseudoinverse} of $A$,
+where $S^{\dagger} \in \mathbb{R}^{d \times n}$ is defined as
+\begin{align}
+    S^{\dagger}_{i,i} = \begin{cases} \frac{1}{S_{i,i}} & \text{if }S_{i,i} \neq 0 \\
+                                    0 & \text{otherwise}
+                        \end{cases}
+    \quad \text{and} \quad S^{\dagger}_{i,j}=0 \text{ for } i \neq j
+\end{align}
+The pseudoinverse has the following properties:
+\begin{itemize}
+    \item If $A$ is invertible, then $A^{\dagger}=A^{-1}$.
+    \item If $A^{\top}A$ is invertible, then $A^{\dagger}=(A^{\top}A)^{-1}A^{\top}$.
+    \item Generally, since this is a pseudoinverse, $AA^{\dagger}\neq I$.
+    \item $AA^{\dagger}A=A$ and $A^{\dagger}AA^{\dagger}=A^{\dagger}$.
+\end{itemize}
+\end{definition}
+
+\begin{subgoal}
+    Therefore, we can write the general solution of linear regression as solving for $x=A^{\dagger}y$.
+\end{subgoal}
+\end{solution}
+
+\subsection{Penalized linear regression}
+
+In general, there is a tradeoff between fitting the data well ($\lVert Ax-y \rVert^2$ small)
+and having a stable solution ($\lVert x \rVert^2$ small). \textbf{Ridge regression} combines these 2 objectives.
+
+\subsubsection{Ridge}
+
+\begin{goal}
+    (Ridge) $\min_{x}  f(x)=\lVert Ax-y \rVert^r + \lambda \lVert x \rVert^2 \text{ w.r.t. } x \in \mathbb{R}^d$ for some fixed $\lambda > 0$.
+\end{goal}
+
+We can scale $\lambda$ proportionally with how much we care about stability.
+As a result of this penalty term, $\lVert Ax-y \rVert^2$ is almost never zero.
+When $\lambda \rightarrow 0$, we recover ordinary least squares.
+
+\begin{solution}
+    This can be solved in closed form by $x=(A^{\top}A+\lambda I)^{-1}A^{\top}y$.
+    $(A^{\top}A+\lambda I)$ is always invertible because $A^{\top}A$ is positive semidefinite and $\lambda I$ is positive definite.
+    The sum of a positive semidefinite matrix and a positive definite matrix is always positive definite, and positive definite matrices are always invertible.
+    This also means that $(A^{\top}A+\lambda I)^{-1}A^{\top} \rightarrow_{\lambda \rightarrow 0} A^{\dagger}$.
+\end{solution}
+
+\subsubsection{Lasso}
+Beyond stability, sparsity is also a property to be tuned. Sparsity means having many coordinates of $x$ equal to zero,
+only selecting a few features for the prediction. The primary difference of regularizations is the norm to penalize with.
+
+\begin{goal}
+    (Sparse) $\min_{x}f(x)=\lVert Ax-y \rVert^2 + \lambda \lVert x \rVert_0$ w.r.t. $x \in \mathbb{R}^d$
+    where $\lVert x \rVert_0$ is a pseudonorm that is the number of non-zero coordinates of $x$. In practice, this is a \textbf{NP-hard} problem.
+\end{goal}
+
+\begin{goal}
+    (Lasso) $\min_{x}f(x)=\lVert Ax-y \rVert^2 + \lambda \lVert x \rVert_1$ w.r.t. $x \in \mathbb{R}^d$. \\
+    This is a non-smooth optimization problem ($L1$ is absolute value)
+    that does not have a closed form solution and must be solved numerically.
+    It's primary difference from ridge is that it sometimes gives you 0 for features whereas Ridge never reaches 0.
+    It is called Lasso in linear regression context, but it is also known as sparse coding, or compressed sensing.
+\end{goal}
+
+\subsubsection{Soft vs hard regularization}
+In practice, there are 2 paths to go about regularization. You can either minimize OLS with some penalizing term (soft regularization),
+or you can minimize OLS subject to some determined norm $c$ of $x$ (hard regularization). It turns out that these 2 forms of regularization are
+equivalent for some mapping $c \leftrightarrow \lambda$. For implementation, usually we use the soft regularization because it is simpler computationally.
+
+\subsection{Matrix norms}
+\subsubsection{Motivation: matrix completion}
+\textbf{The Netflix challenge:} Given $n$ users and $m$ movies. Each user has only rated a few movies.
+Can we predict how a user would rate an unseen movie? Formally, we have matrix $A \in \mathbb{R}^{n \times m}$ and we only observe entries
+$A_{i,j}$ for $(i,j) \in \Omega$. Can we recover the full matrix $A$?
+
+The winners of the challenge represented each user ($v_i \in \mathbb{R}^d$) and movie ($u_i \in \mathbb{R}^d$) with a vector embedding.
+The hope is that similar movies would have be represented with similar vectors (small angle). Likewise for users. Furthermore, the model $A_{ij}$
+would return high values for inner product $v_i^{\top}v_j$ if you would likely rate high.
+\begin{align}
+    A=\begin{bmatrix}
+    \rule{0.5cm}{0.5pt} & u_1^{\top} & \rule{0.5cm}{0.5pt} \\
+    & \vdots &                   \\
+    \rule{0.5cm}{0.5pt} & u_n^{\top} & \rule{0.5cm}{0.5pt}
+    \end{bmatrix}
+    \cdot
+    \begin{bmatrix}
+    \vrule &  & \vrule \\
+    v_1 & \dots & v_m \\
+    \vrule && \vrule \\
+    \end{bmatrix}
+    = U^{\top}V \text{ where d small}
+\end{align}
+
+$d$ represents the latent state of the user, and we make $d$ as low as we can.
+If $d$ is low, then it means that $A$ is a low rank matrix.
+
+\begin{goal}
+    (Low Rank Approximation) $\min_{B} rank(B) \text{ s.t. } B_{ij}=A_{ij} \forall i,j \in \Omega$. \\
+    This is NP-hard!
+\end{goal}
+
+\subsubsection{Schatten norms}
+The rank of $A$ is the $\ell^0$ norm of its singular values (number of eigenvalues).
+\begin{align}
+    \sigma(A)=(\sigma_1(A),\dots,\sigma_{min(n,m)A})
+\end{align}
+This suggests the following family of norms:
+
+\begin{definition}[Schatten $p$-norm]
+    $\lVert A \rVert_p=\lVert \sigma(A) \rVert_p=\begin{cases}
+        (\Sigma_i \sigma_i(A)^p)^\frac{1}{p} & \text{ if } 1 \leq p < \infty \\
+        \max_{i}\sigma_i(A) & \text{ if }  p = \infty
+    \end{cases}$
+\end{definition}
+
+This norm describes the size of the singular values, which describes how much eigenvectors shrink or stretch.
+When $p=1$, all singular values contribute equally. However, as $p \rightarrow \infty$, the norm approaches $\sigma_1$, the largest singular value.
+Proof of valid norm requires homogeneity, non-negativity and triangular inequality.
+It is trivial to show homogeneity and non-negativity,
+however, it is difficult to prove
+$\lVert A+B \rVert_p \leq \lVert A \rVert_p + \lVert B \rVert_p$
+because $\sigma_i(A+B) \neq \sigma_i(A)+\sigma_i(B)$.
+
+While $p \in [1,\infty)$, we discuss $p=1,2,\infty$ since it has some nice properties.
+
+\begin{proposition}[Schatten 2-norm = Frobenius norm]
+    $\lVert A \rVert_2 = \sqrt{ \sum_{i=1}^{min(n,m)} \sigma_i(A)^2}$ \\
+    $\lVert A \rVert_F = \sqrt{ \sum_{i=1}^{n}\sum_{j=1}^{m}A_{i,j}^2}=\sqrt{Tr(A^{\top}A)}$
+    \begin{proof}
+    \begin{align*}
+        A=U \Sigma V^{\top} \tag{\text{SVD decomposition}} \\
+        \lVert A \rVert^2_F = Tr(A^{\top}A) &= Tr((U \Sigma V^{\top})^{\top}(U \Sigma V^{\top})) \\
+                                            &= Tr(V \Sigma^{\top}U^{\top}U \Sigma V^{\top}) \\
+                                            &= Tr(V^{\top}V \Sigma^{\top}U^{\top}U \Sigma) \tag{\text{Tr invariance to cyclical ops}} \\
+                                            &= Tr(\Sigma^{\top}\Sigma) \\
+                                            &= \sum_{i=1}^{n}\sigma^2_i
+    \end{align*}
+    \end{proof}
+\end{proposition}
+
+\begin{proposition}[Schatten $\infty$-norm = Operator norm]
+    $\lVert A \rVert_\infty=\max_{1 \leq i \leq n} \sigma_i(A)$ \\
+    $\lVert A \rVert_{op} = \max_{\lVert x \rVert = 1}\lVert Ax \rVert$
+    \begin{proof}
+    \begin{align*}
+        \text{($\geq$) Operator norm is at least Schatten $\infty$-norm:} \\
+        \text{Take } x &= v_1 \text{ (right singular vector for } \sigma_1) \\
+        \lVert Ax \rVert &= \lVert A v_1 \rVert = \lVert \sigma_1 u_1 \rVert = \sigma_1 \\
+        \text{Since } \lVert v_1 \rVert &= 1, \text{ we have } \lVert A \rVert_{op} \geq \sigma_1 = \lVert A \rVert_\infty \\
+        \text{We can also write it as:} \lVert A \rVert_{op}  =\max_{\lVert x \rVert=1}\sqrt{x^{\top}A^{\top}Ax}&=\sqrt{ \max_{\lVert x \rVert=1} x^{\top}A^{\top}Ax} = \sqrt{ \lambda_{max}(A^{\top}A) }
+        \\
+        \text{($\leq$) Operator norm is at most Schatten $\infty$-norm:} \\
+        \text{For any } x \text{ with } \lVert x \rVert &= 1: \\
+        \lVert Ax \rVert &= \lVert \sum_i \sigma_i (u_i v_i^T) x \rVert = \lVert \sum_i \sigma_i \langle v_i, x \rangle u_i \rVert \\
+        &\leq \sum_i \sigma_i |\langle v_i, x \rangle| \leq \sigma_1 \sum_i |\langle v_i, x \rangle| \leq \sigma_1 = \lVert A \rVert_\infty
+    \end{align*}
+    \end{proof}
+\end{proposition}
+
+\begin{definition}[Schatten 1-norm / Nuclear norm]
+    The Schatten 1-norm, also called the \textbf{nuclear norm}, is defined as:
+    \[
+        \lVert A \rVert_1 = \lVert A \rVert_* = \sum_{i=1}^{\min(n,m)}\sigma_i(A)
+    \]
+    This is the norm used in the Netflix problem!
+    Reminder that for sparse linear regression, $\ell^0$ is NP-hard, so we relax it to $\ell^1$, which is a convex problem.
+    min-rank = "Schatten-0 norm" is a NP-hard problem, which becomes the nuclear norm.
+    The Netflix solution is $\min \lVert B \rVert_* \text{ s.t. } B_{i,j}=A_{i,j} \in \Omega$.
+\end{definition}

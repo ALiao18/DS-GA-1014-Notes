@@ -1,0 +1,84 @@
+% !TEX root = ../main.tex
+\section{Eigenvalues and Markov Chains}
+
+\subsection{Eigenvalues and Eigenvectors}
+
+\begin{definition}[Eigenvalues and Eigenvectors]
+    Let $A \in \mathbb{R}^{n \times n}$.
+    A non-zero vector $v \in \mathbb{R}^{n}$ is an eigenvector if $\exists \lambda \in \mathbb{R}$ s.t. $Av=\lambda v$.
+\end{definition}
+ 
+\begin{proposition}[Eigenvalue Properties]
+    \begin{enumerate} 
+        \item $\alpha \lambda$ is an eigenvalue of $\alpha A$.
+        \item $\lambda + \alpha$ is an eigenvalue of $A+\alpha Id$.
+        \item $\lambda^k$ is an eigenvalue of $A^k$.
+        \item If $A$ is invertible, $\frac{1}{\lambda}$ is an eigenvalue of $A^{-1}$.
+    \end{enumerate}
+\end{proposition}
+
+\begin{definition}[Eigenspace]
+    The eigenspace $E_{\lambda}(A) = Ker(A-\lambda Id)$ is the set of all eigenvectors for $\lambda$ (plus the zero vector).
+    The dimension of $E_{\lambda}(A)$ is the \textbf{multiplicity} of $\lambda$.
+\end{definition}
+
+\begin{definition}[Spectrum]
+    The set of all eigenvalues is the \textbf{spectrum} $Sp(A)$.
+\end{definition}
+
+\begin{proposition}[Bounds on Spectrum]
+    A $n \times n$ matrix $A$ admits at most $n$ distinct eigenvalues.
+    If $\lambda_{1},\dots,\lambda_{k}$ are distinct eigenvalues with multiplicities $m_i$, then $\sum m_i \leq n$.
+\end{proposition}
+
+\subsection{Markov Chains}
+Whenever you have a graph of nodes and edges, you can encode it as an adjacency matrix.
+
+\begin{definition}[Stochastic Matrix]
+    A matrix $P \in \mathbb{R}^{n \times n}$ is stochastic if:
+    \begin{enumerate}
+        \item $P_{i,j} \geq 0 \quad \forall i, j$.
+        \item $\sum_{i=1}^{n}P_{i,j}=1 \quad \forall j$ (Columns sum to 1).
+    \end{enumerate}
+\end{definition}
+
+\begin{definition}[Probability Vector]
+    $x_{t} \in \mathbb{R}^{n}$ is a probability vector if entries are non-negative and sum to 1.
+\end{definition}
+
+\begin{proposition}[The Key Equation]
+    $x^{t+1}=Px^t \implies x^t=P^tx^0$.
+\end{proposition}
+
+\begin{definition}[Invariant Measure]
+    We define $\mu$ as an \textbf{invariant measure} (or stationary distribution) if $\mu = P\mu$.
+    This means $\mu$ is an eigenvector of $P$ associated with eigenvalue 1.
+\end{definition}
+
+\subsubsection{Perron-Frobenius Theorem}
+
+\begin{theorem}[Perron-Frobenius]
+    Let $P$ be a stochastic matrix such that there exists $k \geq 1$ where all entries of $P^k$ are strictly positive (Regular/Ergodic). Then:
+    \begin{enumerate}
+        \item 1 is an eigenvalue of $P$ with a unique eigenvector $\mu \in \nabla_{n}$.
+        \item The eigenvalue 1 has multiplicity 1.
+        \item All other eigenvalues satisfy $|\lambda| < 1$.
+        \item For any initial $x^0$, $P^tx^0 \to \mu$ as $t \to \infty$.
+    \end{enumerate}
+\end{theorem}
+
+\subsection{PageRank: Ordering the Web}
+\begin{goal}
+Find interesting pages.
+\textbf{Idea:} Interesting pages have links from other interesting pages.
+\end{goal}
+
+\begin{idea}
+\textbf{Random Surfer:} Suppose someone clicks on a random link every time.
+The page they spend the most time on is likely the most interesting.
+\end{idea}
+
+This defines a Markov chain.
+The "importance" of a webpage is its value in the invariant measure $\mu$.
+To ensure convergence (satisfy Perron-Frobenius), 
+we introduce a "teleportation" probability $\alpha$ (Random Spectator model), where the surfer sometimes picks a completely random page instead of following a link.

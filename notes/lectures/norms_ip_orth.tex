@@ -1,0 +1,138 @@
+% !TEX root = ../main.tex
+\section{Norms, Inner Products, and Orthogonality}
+
+\subsection{Norms}
+
+\begin{definition}[Euclidean Norm]
+    We define the Euclidean norm of $x=(x_{1},x_{2},\dots, x_{n}) \in \mathbb{R}^{n}$ as:
+    \[ \lVert x \rVert_{2}=\sqrt{ x_{1}^{2}+\dots+x_{n}^{2} } \]
+\end{definition}
+
+\subsubsection{General norms}
+For it to be a measure of length, it must satisfy 3 qualities.
+Let $V$ be a vector space.
+
+\begin{definition}[Norm]
+    A \textbf{norm} $\lVert \cdot \rVert$ on $V$ is a function from $V$ to $\mathbb{R}_{\geq 0}$ that verifies:
+    \begin{enumerate}
+        \item \textbf{Homogeneity:} $\lVert \alpha v \rVert = \lvert \alpha \rvert \times \lVert v \rVert \quad \forall\alpha \in \mathbb{R}, v \in V$.
+        \item \textbf{Positive definiteness:} If $\lVert x \rVert=0$ for some $x \in V$, then $x=0$.
+        \item \textbf{Triangular inequality:} $\lVert u+v \rVert \leq \lVert u \rVert + \lVert v \rVert \quad \forall u, v \in V$.
+    \end{enumerate}
+\end{definition}
+
+\textbf{Other norms:}
+\begin{itemize}
+    \item $\ell_1$ norm (Manhattan): $\lVert x \rVert_{1}=\sum_{i=1}^{n}\lvert x_{i} \rvert$.
+    \item $\ell_{\infty}$ norm: $\lVert x \rVert_{\infty}=\max(\lvert x_{1}\rvert, \dots, \lvert x_{n} \rvert)$.
+    \item $\ell_{p}$ norm: $\lVert x \rVert_{p}=\left(\sum_{i=1}^{n} \lvert x_{i} \rvert^p\right)^{\frac{1}{p}}$.
+\end{itemize}
+
+\subsubsection{Application to regularized linear regression}
+Suppose this is an under-constrained (over-parameterized) solution.
+Thus the solution occupies an affine space $\{ \theta \mid X\theta=y \}$.
+
+\begin{idea}
+    How do you pick which $\theta$ if there are infinite solutions?
+    By \textbf{Occam's Razor}, let's take the simplest one, or $\min \lVert \theta \rVert$ among solutions.
+    To visualize this, let's suppose on a 2D graph there is a line that doesn't cross the origin.
+    Starting from the origin, we gradually increase the norm until some point of the norm intersects with the solution set.
+\end{idea}
+
+\subsection{Inner products}
+
+\begin{definition}[Euclidean Dot Product]
+    We define the Euclidean dot product of two vectors $x$ and $y$ of $\mathbb{R}^{n}$ as:
+    \begin{align}
+    x \cdot y &= \sum_{i=1}^{n}x_{i}y_{i} = x_{1}y_{1}+\dots+x_{n}y_{n} \\
+              &= \lVert x \rVert \lVert y \rVert \cos\theta
+    \end{align}
+    If they are aligned, the inner product is large; if orthogonal, it is 0.
+\end{definition}
+
+\begin{definition}[Inner Product]
+    An \textbf{inner product} on $V$ is a function $\langle \cdot, \cdot  \rangle$ from $V \times V$ to $\mathbb{R}$ that verifies:
+    \begin{enumerate}
+        \item \textbf{Symmetry:} $\langle u, v \rangle = \langle v, u \rangle \quad \forall u, v \in V$.
+        \item \textbf{Bilinearity:} $\langle u+v,w  \rangle=\langle u,w  \rangle+\langle v,w  \rangle$ and $\langle \alpha v, w \rangle=\alpha\langle v,w  \rangle$.
+        \item \textbf{Positive definiteness:} $\langle v,v  \rangle\geq 0$ with equality iff $v=0$.
+    \end{enumerate}
+\end{definition}
+
+\begin{proposition}[Induced norm]
+    If $\langle \cdot,\cdot  \rangle$ is an inner product on $V$ then,
+    \[ \lVert v \rVert \stackrel{\text{def}}{=} \sqrt{ \langle v,v  \rangle } \]
+    is a norm on $V$. We say that the norm $\lVert \cdot \rVert$ is induced by the inner product.
+\end{proposition}
+
+\subsubsection{Example: Random Variables}
+Consider the set $V$ of all random variables (on a probability space $\Omega$) that have a finite second moment, with the inner product:
+\[ \langle X,Y  \rangle \stackrel{\text{def}}{=} \mathbb{E}[XY] \]
+The induced norm is $\lVert X \rVert=\sqrt{ \mathbb{E}[X^{2}] }$ (Standard deviation if zero-mean).
+
+\begin{theorem}[Cauchy-Schwarz inequality]
+    If $\lVert \cdot \rVert$ is the norm induced by the inner product $\langle \cdot,\cdot  \rangle$ on $V$, then $\forall x, y \in V:$
+    \[ \lvert \langle x,y  \rangle \rvert \leq \lVert x \rVert \lVert y \rVert \]
+    Equality holds iff $x$ and $y$ are linearly dependent.
+\end{theorem}
+
+\subsection{Orthogonality}
+
+\begin{definition}[Orthogonality]
+    We say that vectors $x,y$ are orthogonal if $\langle x,y  \rangle=0$. We write then $x \perp y$.
+\end{definition}
+
+\begin{definition}[Orthogonal and Orthonormal Families]
+    A family of vectors $(v_{1},\dots,v_{k})$ is:
+    \begin{itemize}
+        \item \textbf{Orthogonal} if $\langle v_{i},v_{j}  \rangle=0 \quad \forall i \neq j$.
+        \item \textbf{Orthonormal} if it is orthogonal and $\lVert v_{i} \rVert=1$.
+    \end{itemize}
+\end{definition}
+
+\begin{proposition}
+    Assume that $dim(V)=n$ and let $(v_{1},\dots,v_{n})$ be an orthonormal basis of $V$.
+    Then the coordinates of a vector $x \in V$ are $(\langle v_{1},x  \rangle, \dots, \langle v_{n},x  \rangle)$:
+    \[ x=\langle v_{1},x  \rangle v_{1}+\dots+\langle v_{n}, x \rangle v_{n} \]
+\end{proposition}
+
+\begin{theorem}[Pythagorean theorem]
+    Let $\lVert \cdot \rVert$ be the norm induced by $\langle \cdot,\cdot  \rangle$. For all $x,y \in V$:
+    \[ x \perp y \iff \lVert x+y \rVert^{2}=\lVert x \rVert^{2}+\lVert y \rVert^{2} \]
+\end{theorem}
+
+\begin{proof}
+\begin{align}
+\lVert x+y \rVert^{2}&=\langle x+y, x+y \rangle \\
+                     &=\langle x,x  \rangle+\langle y,x  \rangle+\langle x,y  \rangle + \langle y,y  \rangle \\
+                     &= \lVert x \rVert^{2} + \lvert y \rvert^{2} + 2\langle x,y  \rangle   \\
+                     &= \lVert x \rVert^{2} + \lvert y \rvert^{2} \iff x \perp y
+\end{align}
+\end{proof}
+
+\subsubsection{Orthogonal Projection}
+Let $S$ be a subspace of $\mathbb{R}^{n}$.
+The \textbf{orthogonal projection} of $x$ onto $S$ is the vector $P_{S}(x)$ in $S$ that minimizes the distance to $x$:
+\[ P_{S}(x) \stackrel{\text{def}}{=} \underset{y \in S}{\operatorname{argmin}}\lVert x-y \rVert \]
+
+\begin{proposition}
+    Let $(v_{1},\dots,v_{k})$ be an orthonormal basis of $S$.
+    Then for all $x \in \mathbb{R}^{n}$:
+    \[ P_{S}(x)=\langle v_{1},x  \rangle v_{1}+\dots+\langle v_{k},x  \rangle v_{k} \]
+    Let $V$ gather the orthonormal basis vectors of $S$.
+    Then $P_{S}(x)=VV^{\top}x$.
+\end{proposition}
+
+\begin{corollary}
+    \begin{enumerate}
+        \item $x-P_{S}(x)$ is orthogonal to $S$.
+        \item $\lVert P_{S}(x) \rVert \leq \lVert x \rVert$.
+    \end{enumerate}
+\end{corollary}
+
+\subsubsection{Orthogonal Complement}
+We define the orthogonal complement of $S$ as $S^\perp = \{ x \in V \mid x \perp S\}$.
+\begin{itemize}
+    \item $S^\perp$ is a subspace of $V$.
+    \item $dim(S^\perp) = dim(V)- dim(S)$.
+\end{itemize}

@@ -1,0 +1,65 @@
+% ==========================================
+% 1. Custom Layout Environments (No numbering)
+% ==========================================
+
+\newenvironment{goal}
+  {\noindent\textbf{Goal.}}
+  {\par\vspace{0.75em}}
+
+\newenvironment{subgoal}
+  {\noindent\textbf{Subgoal.}}
+  {\par\vspace{0.75em}}
+
+\newenvironment{idea}
+  {\noindent\textbf{Idea.}}
+  {\par\vspace{0.75em}}
+
+\newenvironment{solution}
+  {\noindent\textbf{Solution.}}
+  {\par\vspace{0.75em}}
+
+% ==========================================
+% 2. Standard Theorem Environments (amsthm)
+% ==========================================
+
+% --- Style A: PLAIN (Bold title, Italic body) ---
+% Best for: Theorems, Lemmas, Corollaries, Propositions
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]      % Resets counter per section (e.g., 1.1)
+\newtheorem{lemma}[theorem]{Lemma}          % Shares counter with Theorem
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+
+% --- Style B: DEFINITION (Bold title, Upright body) ---
+% Best for: Definitions, Examples, Remarks
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{example}{Example}[section]
+\newtheorem{remark}{Remark}[section]
+
+% ==========================================
+% 3. Legacy/Custom Compatibility
+% ==========================================
+
+% This preserves your old 'mydef' style (Bold title, Newline, Upright body)
+% You can use this if you prefer the newline after the title, 
+% or migrate to the standard \begin{definition} above.
+
+\newtheoremstyle{mydefstyle}
+  {1em}{1em}   % Space above/below
+  {}           % Body font (empty = upright)
+  {}           % Indent amount
+  {\bfseries}  % Theorem head font
+  {}           % Punctuation after head
+  {\newline}   % Space after head (newline)
+  {}           % Head spec
+
+\theoremstyle{mydefstyle}
+\newtheorem{mydefinition}{Def.}[section]
+
+% Wrapper environment to match your previous files
+\makeatletter
+\newenvironment{mydef}[1][]
+  {\begin{mydefinition}[#1]}
+  {\end{mydefinition}}
+\makeatother
