@@ -4,8 +4,6 @@
 
 Course notes for a proof-based course covering linear algebra (first 2/3) and optimization (last 1/3).
 
-> **Note:** Notes were typed in Obsidian with LaTeX suite. Some formulas may not render correctly on GitHub. Updates coming gradually.
-
 ## Topics
 
 1. Vector spaces (vector spaces, span and linear families, basis and dimension)
