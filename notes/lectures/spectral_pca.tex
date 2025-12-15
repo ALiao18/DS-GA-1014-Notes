@@ -11,7 +11,7 @@
 That means if $A$ is symmetric, then there exists an orthonormal basis $(v_{1},\dots,v_{n})$ and $\lambda_{1},\dots, \lambda_{n} \in \mathbb{R}$ such that:
 \begin{align}
 Av_{i}&=\lambda_{i}v_{i} \quad \forall i \in \{ 1,\dots,n \} \\
-AV&=V\Lambda \tag{$\Lambda=diag(\lambda_{1},\dots,\lambda_{n})$} \\
+AV&=V\Lambda \tag{$\Lambda=\text{diag}(\lambda_{1},\dots,\lambda_{n})$} \\
 A&=V\Lambda V^{\top} \tag{Since $V^{\top}=V^{-1}$} \\
 A&=\sum_{i=1}^{n}\lambda_{i}v_{i}v_{i}^{\top}
 \end{align}
@@ -22,35 +22,16 @@ Geometrically, $\lambda_{i}v_{i}v_{i}^{\top}$ is the orthogonal projection onto 
     Then there exists an orthogonal matrix $P$ and a diagonal matrix $D$ such that $A=PDP^{\top}$.
 \end{theorem}
 
-\subsubsection{The spectral orthonormal basis}
-Why are eigenvectors orthogonal when $A$ is symmetric?
-Let $v,w$ be eigenvectors of $A$ for eigenvalues $\lambda \neq \mu$.
+\subsubsection{Why are eigenvectors orthogonal?}
+Let $v_1, v_2$ be eigenvectors for distinct eigenvalues $\lambda_1, \lambda_2$.
 \begin{align}
-v^{\top}Aw &= v^{\top}(\mu w)=\mu v^{\top} w \\
-           &= v^{\top}A^{\top}w = (Av)^{\top}w=\lambda v^{\top}w
+\lambda_1 \langle v_1, v_2 \rangle &= \langle Av_1, v_2 \rangle \\
+&= \langle v_1, A^{\top}v_2 \rangle \\
+&= \langle v_1, Av_2 \rangle \tag{Symmetry $A=A^{\top}$} \\
+&= \langle v_1, \lambda_2 v_2 \rangle \\
+&= \lambda_2 \langle v_1, v_2 \rangle
 \end{align}
-Therefore $(\mu-\lambda)v^{\top}w = 0$.
-Since $\mu\neq\lambda$, $v^{\top}w$ must be 0.
-
-\subsubsection{Geometric Interpretation}
-$Ax$ is equivalent to the orthogonal projection of $x$ onto the eigenvector basis, scaled by its corresponding eigenvalue.
-\begin{align}
-Ax &= A\left( \sum_{i=1}^{n} \langle x, v_{i} \rangle v_{i}\right) = \sum_{i=1}^{n} \lambda_{i} \langle x,v_{i}  \rangle v_{i}
-\end{align}
-Operations (Right to Left in $V\Lambda V^{\top}$):
-\begin{enumerate}
-    \item Decompose into eigenvector basis ($V^{\top}$).
-    \item Scale by eigenvalues ($\Lambda$).
-    \item Transform back to standard basis ($V$).
-\end{enumerate}
-
-\subsubsection{Consequences}
-If $A=PDP^{\top}$ for orthogonal $P$:
-\begin{enumerate}
-    \item The rank of $A$ equals the number of non-zero $\lambda_{i}$.
-    \item $A$ is invertible iff $\lambda_{i}\neq 0$ for all $i$. Then $A^{-1}=P\Lambda^{-1}P^{\top}$.
-    \item $Tr(A) = \sum \lambda_i$.
-\end{enumerate}
+$(\lambda_1 - \lambda_2)\langle v_1, v_2 \rangle = 0$. Since $\lambda_1 \neq \lambda_2$, $\langle v_1, v_2 \rangle = 0$.
 
 \subsection{Principal Component Analysis (PCA)}
 
@@ -68,19 +49,15 @@ Find a lower dimensional representation $\tilde{a}_{1},\dots\tilde{a}_{n} \in \m
 \end{goal}
 
 Assume centered data ($\mu=0$).
-Then $\Sigma \propto \sum a_i a_i^{\top} = A^{\top}A$, which is symmetric. We can apply the Spectral Theorem.
+Then $\Sigma = \frac{1}{n} \sum a_i a_i^{\top} = \frac{1}{n} A^{\top}A$, which is symmetric. We can apply the Spectral Theorem.
 
 \begin{idea}
     \textbf{Direction of maximal variance:}
-    We aim to find $u$ where variance is maximal.
+    We aim to find $u$ where variance is maximal: $\max_{\lVert u \rVert = 1} u^{\top}\Sigma u$.
     This corresponds to the eigenvector associated with the largest eigenvalue of the covariance matrix.
 \end{idea}
 
-The $j$-th direction of maximal variance is $v_{j}$, the eigenvector corresponding to the $j$-th largest eigenvalue.
-The dimensionally reduced dataset is the projection onto these first $k$ eigenvectors.
+The $j$-th direction of maximal variance is $v_{j}$, the solution to maximizing $v^{\top}\Sigma v$ subject to $\lVert v \rVert=1$ and $v \perp v_1, \dots, v \perp v_{j-1}$. This is the $j$-th eigenvector.
 
-\subsubsection{Choosing $k$}
-\begin{enumerate}
-    \item \textbf{Elbow rule:} Eyeballing where there is a sharp decrease in explained variance.
-    \item \textbf{Percentage threshold:} Keep enough components to explain $x\%$ of total variance.
-\end{enumerate}
+The dimensionally reduced dataset in $k$ dimensions is:
+\[ \begin{pmatrix} \langle v_{1},a_{1}  \rangle \\ \vdots \\ \langle v_{k},a_{1}  \rangle \end{pmatrix}, \dots, \begin{pmatrix} \langle v_{1},a_{n}  \rangle \\ \vdots \\ \langle v_{k},a_{n}  \rangle \end{pmatrix} \]

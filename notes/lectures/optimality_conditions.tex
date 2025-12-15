@@ -1,15 +1,177 @@
 % !TEX root = ../main.tex
-\section{Optimality Conditions} 
+\section{Optimality Conditions}
 
-If you have a convex problem, we have the global minimizer iff this point is a critical point. 
-But what about non-convex problems?
+\subsection{Unconstrained Optimization}
 
-\subsection{Critical points (Unconstrained optimization)} 
-\begin{mydefinition}[differentiable function]
-    Let $f:$
+\begin{definition}[Minimizers and Critical Points]
+    Let $f: \mathbb{R}^n \rightarrow \mathbb{R}$ be a differentiable function. We say that $x\in \mathbb{R}^n$ is:
+    \begin{itemize}
+        \item A \textbf{global minimizer} of $f$ if for all $x'\in \mathbb{R}^n, f(x) \leq f(x')$.
+        \item A \textbf{local minimizer} of $f$ if $\exists \delta > 0 \text{ s.t. }$ we have $f(x) \leq f(x')$ for all $x'$ verifying $\lVert x-x' \rVert \leq \delta$.
+        \item A \textbf{critical point} of $f$ if $\nabla f(x)=0$.
+    \end{itemize}
+\end{definition}
 
-\end{mydefinition}
+\begin{proposition}
+    For convex functions:
+    \begin{enumerate}
+        \item $x$ is a local minimizer of $f \implies \nabla f(x)=0$.
+        \item $\nabla f(x)=0 \iff x$ is a global minimizer of $f$.
+    \end{enumerate}
+\end{proposition}
 
-\subsection{Constrained optimization and Lagrange multipliers}
+\begin{proof}[Proof Sketch]
+    We define a local minimizer as a point where, under some interval, there is no direction to go from $x$ that ends in a function value lesser than $x$.
+    Using the first order Taylor expansion to approximate $f(x+h):$
+    \begin{align*}
+    f(x+h)=f(x)+h^{\top}\nabla f(x)+ o(\lVert h \rVert ) &\geq f(x) \\
+    h^{\top} \nabla f(x) + o(\lVert h \rVert ) &\geq 0
+    \end{align*}
+    Let $h=-\nabla f(x)$.
+    \begin{align*}
+    -\lVert \nabla f(x) \rVert^{2} + o(\lVert -\nabla f(x) \rVert ) &\geq 0 \tag{$o(\lVert h \rVert )\rightarrow$ 0}\\
+    -\lVert \nabla f(x) \rVert^{2} &\geq 0 \\
+    -\lVert \nabla f(x) \rVert^{2} \geq 0 &\iff \nabla f(x) = 0
+    \end{align*}
+\end{proof}
 
-\subsection{Convex constrained optimization}
+In non-convex functions, $\nabla f(x)=0$ only indicates a critical point. To determine if it is a minimizer, we must examine the second-order term.
+
+\begin{proposition}[Second Order Conditions]
+    Let $f: \mathbb{R}^n \rightarrow \mathbb{R}$ be a twice differentiable function. Let $x\in \mathbb{R}^n$ be a critical point of $f$ (i.e., $\nabla f(x)=0$). Then:
+    \begin{enumerate}
+        \item If $H_{f}(x)$ admits strictly positive eigenvalues, then $x$ is a \textbf{local minimizer} of $f$.
+        \item If $H_{f}(x)$ admits strictly negative eigenvalues, then $x$ is a \textbf{local maximizer} of $f$.
+        \item If $H_{f}(x)$ admits strictly positive AND strictly negative eigenvalues, then $x$ is a \textbf{saddle point} of $f$.
+    \end{enumerate}
+\end{proposition}
+
+\begin{proof}[Heuristic Proof]
+    Let $f(x)$ be a critical point with $\nabla f(x)=0$.
+    \[ f(x+h)=f(x)+\nabla f(x)^{\top}h + \frac{1}{2}h^{\top}\nabla^{2}f(x)h + o(\lVert h \rVert^{2} ) \]
+    Let $h= \varepsilon e_{i}$ (where $e_i$ is an eigenvector of $\nabla^{2}f(x)$ for eigenvalue $\lambda_{i}$).
+    \[ f(x+\varepsilon e_{i})=f(x)+\frac{\varepsilon^{2}}{2}\lambda_{i}+o(\varepsilon^{2}) \]
+    Thus, the sign of the eigenvalues determines how $f(x+h)$ compares with $f(x)$. Note that \textbf{strict} signage is important!
+    
+    \textit{Edge case:} If eigenvalues are 0, the second order term vanishes, and we must rely on third-order information.
+\end{proof}
+
+\subsection{Constrained Optimization and Lagrange Multipliers}
+
+Constrained optimization problems take the form:
+\begin{align*}
+\text{minimize } &f(x) \text{ with variable } x\in \mathbb{R}^n \\
+\text{subject to } &g_{i}(x)\leq 0, \quad i = 1,\dots,m \\
+&h_{i}(x) = 0, \quad i = 1,\dots, p
+\end{align*}
+
+\subsubsection*{Examples}
+\begin{itemize}
+    \item $\min_{x}x^{\top}Ax \text{ s.t. } \lVert x \rVert=1$. Here $h_{1}(x)=\lVert x \rVert-1$.
+    \item $\min_{x}\lVert Ax-y \rVert^{2} \text{ s.t. } \lVert x \rVert \leq r$. Here $g_{1}(x)=\lVert x \rVert-r$.
+\end{itemize}
+
+\subsection{Feasible Points}
+
+\begin{definition}[Feasible Set]
+    A point $x\in \mathbb{R}^n$ is \textbf{feasible} if it satisfies all constraints.
+    The set of all feasible points is called the \textbf{feasible set}, denoted $F$.
+\end{definition}
+
+\begin{idea}
+    Can we be sure that the \textit{unconstrained minimizer} is always in the feasible set? No.
+    Consider $\min_{x}x^{2} \text{ s.t. } x \geq 1$.
+    The unconstrained minimizer is $x=0$. However, the feasible set is $[1, \infty)$, thus the \textit{constrained minimizer} is $x=1$.
+\end{idea}
+
+When the optimality condition $\nabla f(x)=0$ doesn't hold, what conditions characterize solutions?
+
+\subsection{First Order Optimality Condition}
+Consider the problem: $\min_{x}f(x) \text{ subject to } g(x) \leq 0$.
+The optimal point $x^*$ can be either inside the feasible set or on the boundary.
+
+
+
+\paragraph{Case 1: $x^*$ inside (Constraint Inactive).}
+There exists $\delta>0 \text{ s.t. } B(x^*, \delta)\subset F$.
+Since $g(x^*)<0$ and we assume continuity, we can locally minimize $f(x)$ over the ball $B(x^*, \delta)$.
+This is equivalent to an unconstrained local minimizer, so $\nabla f(x^*)=0$.
+
+\paragraph{Case 2: $x^*$ on boundary (Constraint Active).}
+At a boundary minimum, the gradient of the objective function is orthogonal to the tangent of the feasible set and points outward (away from the unconstrained optimal).
+Formally, if $g(x^*)=0$, then $f(x^*)+\lambda \nabla g(x^*)=0$ for some $\lambda \geq 0$.
+
+
+
+\begin{theorem}[Lagrange Multipliers]
+    If $x$ is a solution and if $\nabla h_{1}(x),\dots,\nabla h_{p}(x), \{ \nabla g_{i}(x) \mid g_{i}(x)=0 \}$ are linearly independent, then there exists $\lambda_{1},\dots,\lambda_{m}\geq 0$ and $\nu_{1},\dots,\nu_{p}\in \mathbb{R}$ such that:
+    \[ \nabla f(x)+\sum_{i=1}^{m}\lambda_{i}\nabla g_{i}(x)+\sum_{i=1}^{p}\nu_{i}\nabla h_{i}(x)=0 \]
+    Moreover, for all $i\in \{ 1,\dots,m \}$, if $g_{i}(x)<0$, then $\lambda_{i}=0$.
+\end{theorem}
+
+\subsubsection*{Example}
+Minimize $\langle x,u \rangle$ subject to $\lVert x \rVert^{2}=1$ ($u \neq 0$).
+Let $h(x)=\lVert x \rVert^{2}-1$, so $\nabla h(x)=2x$.
+\[ u+\nu 2x=0 \implies x=-\frac{1}{2\nu} u \]
+Using the constraint $\lVert x \rVert=1$:
+\[ 1 = \lVert -\frac{1}{2\nu} u \rVert = \frac{1}{2|\nu|} \lVert u \rVert \implies |\nu| = \frac{\lVert u \rVert}{2} \]
+Solution: $x = \pm \frac{u}{\lVert u \rVert}$.
+Checking values: $f(x) = \langle \pm \frac{u}{\lVert u \rVert}, u \rangle = \pm \lVert u \rVert$.
+The minimum is $-\lVert u \rVert$ at $x = -\frac{u}{\lVert u \rVert}$.
+
+\section{Convex Constrained Optimization}
+
+A constrained optimization problem is \textbf{convex} when $f, g_{1},\dots,g_{m}$ are convex functions and $h_{1},\dots,h_{p}$ are affine functions.
+
+\subsection{Karush-Kuhn-Tucker (KKT) Theorem}
+
+\begin{theorem}[KKT Conditions]
+    Assume the problem is convex and Slater's condition holds (exists a feasible point where strict inequality holds). Then $x$ is a solution \textbf{if and only if} $x$ is feasible and there exists Lagrange multipliers $\lambda_{1},\dots, \lambda_{m} \geq 0, \nu_{1},\dots,\nu_{p}\in \mathbb{R}$ such that:
+    \begin{enumerate}
+        \item \textbf{Primal feasibility:} $g_{i}(x) \leq 0, \forall i$ and $h_{j}(x)=0, \forall j$.
+        \item \textbf{Dual feasibility:} $\lambda_{i}\geq 0, \forall i$.
+        \item \textbf{Stationarity:} $\nabla f(x)+\sum_{i=1}^{m}\lambda_{i} \nabla g_{i}(x) + \sum_{j=1}^{p}\nu_{j}\nabla h_{j}(x)=0$.
+        \item \textbf{Complementary slackness:} $\lambda_{i}g_{i}(x)=0, \forall i$.
+    \end{enumerate}
+\end{theorem}
+
+\subsubsection{Example: Ridge Regression}
+\begin{align*}
+\text{minimize } & \lVert Ax-y \rVert^{2} \\
+\text{subject to } & \lVert x \rVert ^{2} \leq r^{2}
+\end{align*}
+$x$ is a solution if there exists $\lambda \geq 0$ such that:
+\[
+\begin{cases}
+\lVert x \rVert^{2} \leq r^{2} \\
+2A^{\top}(Ax-y)+\lambda 2x=0 \\
+\lambda (\lVert x \rVert^2 - r^2) = 0
+\end{cases}
+\]
+From Stationarity: $(A^{\top}A+\lambda Id)x = A^{\top}y$.
+There are two cases:
+\begin{enumerate}
+    \item $\lambda=0 \implies x = (A^{\top}A)^{-1}A^{\top}y$ (Unconstrained solution is feasible).
+    \item $\lambda > 0 \implies \lVert x \rVert = r$.
+\end{enumerate}
+
+\subsubsection{Example: Projection onto subspace}
+Let $u,v\in \mathbb{R}^n \text{ s.t. } \lVert v \rVert=1$.
+\begin{align*}
+\text{minimize } & \lVert x-u \rVert^{2} \\
+\text{subject to } & x \perp v \iff \langle x, v \rangle = 0
+\end{align*}
+KKT Conditions:
+\[
+\begin{cases}
+\langle x,v  \rangle=0 \\
+2(x-u)+\nu v=0 \implies x=u-\frac{\nu}{2}v
+\end{cases}
+\]
+Substitute $x$ into the constraint:
+\begin{align*}
+\langle u-\frac{\nu}{2}v, v \rangle &= 0 \\
+\langle u,v \rangle - \frac{\nu}{2}\lVert v \rVert^{2} &= 0 \\
+\nu &= 2\langle u,v \rangle
+\end{align*}
+Thus, $x = u - \langle u, v \rangle v$. (This is the orthogonal projection of $u$ onto the plane orthogonal to $v$).

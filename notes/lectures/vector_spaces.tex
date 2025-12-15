@@ -33,81 +33,71 @@
         \item is closed under vector addition,
         \item is closed under scalar multiplication.
     \end{enumerate}
-    If these conditions hold, $S$ is a vector space.
-\end{definition}
-
-\subsubsection*{Examples}
-\begin{itemize}
-    \item $\mathbb{R}^n$ is a subspace of itself.
-    \item $\{0\}$ is a subspace of any vector space.
-    \item Any line through the origin is a subspace of $\mathbb{R}^2$.
-\end{itemize}
-
-\subsection{Span and Linear Dependence}
-
-\begin{definition}[Linear Combination]
-    A vector $y\in V$ is a \textbf{linear combination} of $x_1,\dots,x_k$ if
-    \[
-    y=\sum_{i=1}^{k}\alpha_i x_i,
-    \]
-    for scalars $\alpha_i\in\mathbb{R}$.
-\end{definition}
-
-\begin{definition}[Span]
-    The \textbf{span} of vectors $x_1,\dots,x_n$ is the set of all linear combinations.
-    \[
-    \operatorname{span}(x_1,\dots,x_n)
-    = \{ \alpha_1x_1 + \dots + \alpha_nx_n : \alpha_i\in\mathbb{R}\},
-    \]
-    the smallest subspace of $V$ that contains them.
-\end{definition}
-
-\begin{definition}[Linear Dependence]
-    Vectors $x_1,\dots,x_k$ are \textbf{linearly dependent} if not all scalars
-    $\alpha_1,\dots,\alpha_k$ are zero and
-    \[
-    \alpha_1x_1+\dots+\alpha_kx_k = 0.
-    \]
-    They are \textbf{linearly independent} otherwise.
+    Note that if $S$ is a subspace of $V$, $S$ is a vector space as well.
 \end{definition}
 
 \subsubsection*{Examples}
 \begin{enumerate}
-    \item The set $(x)$ is linearly independent iff $x\neq 0$.
-    \item The set $(x,-x)$ is always linearly dependent because $x + (-x)=0$.
+    \item $\mathbb{R}^n$ is a subspace of $\mathbb{R}^n$.
+    \item $\{0\}$ is a subspace of $\mathbb{R}^n$.
+    \item Any line $V$ going through the origin is a subspace of $\mathbb{R}^2$.
+    \item Is $\mathbb{R}^2$ a subspace of $\mathbb{R}^3$? No, because the operations are not defined (vectors have different numbers of components). However, the set of vectors $\{(x,y,0) \mid x,y \in \mathbb{R}\}$ is a subspace of $\mathbb{R}^3$.
 \end{enumerate}
+
+\subsection{Span and Linear Families}
+
+\begin{definition}[Linear Independence]
+    A family of vectors $x_1, \dots, x_k$ is \textbf{linearly independent} if the only linear combination that equals the zero vector is the trivial solution (all scalars are zero).
+    \[ \sum_{i=1}^k \alpha_i x_i = 0 \implies \alpha_1 = \dots = \alpha_k = 0 \]
+\end{definition}
+
+\subsubsection*{Examples}
+\begin{enumerate}
+    \item Are the vectors $e_1=(1,0,0), e_2=(0,1,0), e_3=(0,0,1)$ linearly independent?
+    Let $\alpha_1 e_1 + \alpha_2 e_2 + \alpha_3 e_3 = 0$.
+    $(\alpha_1, \alpha_2, \alpha_3) = (0,0,0)$.
+    Thus, $\alpha_1 = \alpha_2 = \alpha_3 = 0$. Yes.
+    \item Is $(x, -x)$ linearly dependent?
+    Let $\alpha_1 x + \alpha_2 (-x) = 0 \implies (\alpha_1 - \alpha_2)x = 0$.
+    If $x \neq 0$, then $\alpha_1 = \alpha_2$. We can choose $\alpha_1 = 1, \alpha_2 = 1$. Since scalars are non-zero, they are linearly dependent.
+\end{enumerate}
+
+\begin{definition}[Span]
+    The \textbf{span} of a set of vectors is the set of all possible linear combinations of those vectors.
+    \[ Span(x_1, \dots, x_k) = \{ \alpha_1 x_1 + \dots + \alpha_k x_k \mid \alpha_i \in \mathbb{R} \} \]
+\end{definition}
 
 \subsection{Basis and Dimension}
 
 \begin{definition}[Basis]
-    A family $x_1,\dots,x_n$ is a \textbf{basis} of $V$ if
+    A family of vectors $(x_1, \dots, x_n)$ is a \textbf{basis} of a vector space $V$ if:
     \begin{enumerate}
-        \item $x_1,\dots,x_n$ are linearly independent,
-        \item $\operatorname{span}(x_1,\dots,x_n)=V$.
+        \item They are linearly independent.
+        \item They span $V$ (i.e., $Span(x_1, \dots, x_n) = V$).
     \end{enumerate}
 \end{definition}
 
 \begin{definition}[Dimension]
-    If every basis of $V$ has $n$ vectors, we say $\dim(V)=n$.
-    If no finite basis exists, $\dim(V)=+\infty$.
+    The \textbf{dimension} of a vector space $V$, denoted $\dim(V)$, is the number of vectors in its basis.
+    If a basis has $n$ vectors, we say $\dim(V)=n$. If no finite basis exists, $\dim(V)=+\infty$.
 \end{definition}
 
 \subsubsection{Properties}
 Let $x_1,\dots,x_n \in V \text{ s.t. } \dim(V)=n$.
 \begin{enumerate}
-    \item If $x_1,\dots,x_n$ are linearly independent, then $x_1,\dots,x_n$ is a basis for $V$ (We get span for free).
-    \item If $Span(x_1,\dots,x_n)=V$, then $(x_1,\dots,x_n)$ is the basis of $V$ (we get linear independence for free).
+    \item If $x_1,\dots,x_n$ are linearly independent, then $(x_1,\dots,x_n)$ is a basis of $V$ (we get Span $= V$ for free).
+    \item If $Span(x_1,\dots,x_n)=V$, then $(x_1,\dots,x_n)$ is a basis of $V$ (we get linear independence for free).
 \end{enumerate}
-To show that a family of vectors $x_1,\dots,x_k$ form a basis, we need to show:
+To show that a family $x_1,\dots,x_k$ forms a basis, we need to show 3 things:
 \begin{enumerate}
     \item $k=n$
-    \item linear independence
+    \item Linear independence
     \item $Span(x_1,\dots,x_k)=V$
 \end{enumerate}
-From above we see that showing any 2 properties implies the third one. We can trivially show $k=n$, so we usually choose to show the easier of 2 and 3.
+From above we see that showing any 2 properties implies the third one. We usually choose to show the easier of 2 and 3.
 
 \begin{definition}[Line and Hyperplane]
-    Let $S$ be a subspace.
+    Let $S$ be a subspace of $\mathbb{R}^n$.
     \begin{enumerate}
         \item If $\dim(S)=1$, $S$ is a \textbf{line}.
         \item If $\dim(S)=n-1$, $S$ is a \textbf{hyperplane}.
@@ -125,9 +115,12 @@ From above we see that showing any 2 properties implies the third one. We can tr
 \begin{proof}
     $Span(v_1,\dots,v_n) = V$ since it is the basis of $V$.
     Since $x$ is some linear combination of $v_1,\dots,v_n$, $x \in Span(v_1,\dots,v_n)$.
-    Therefore, there exists some vector $\alpha$ such that the linear combination of $v$ and $\alpha$ is $x$.
-    Suppose there is another set of vectors $\beta_1,\dots,\beta_n$ such that $x$ is a linear combination of $v$ and $\beta$.
-    \[ x - x = (\alpha_1 v_1 + \dots + \alpha_n v_n) - (\beta_1 v_1 + \dots + \beta_n v_n)=0 \]
-    Since $v$ is linearly independent, $\alpha_i = \beta_i$ for $1 \leq i \leq n$.
-    Therefore there is a unique vector in each basis to obtain $x$.
+    Therefore, there exists some vector $\alpha$ such that the linear combination of $v$ matches $x$.
+    
+    \textbf{Uniqueness:}
+    Suppose there are two sets of coordinates $\alpha$ and $\beta$ such that:
+    $x = \sum \alpha_i v_i = \sum \beta_i v_i$.
+    Then $\sum (\alpha_i - \beta_i)v_i = 0$.
+    Since the basis vectors $v_i$ are linearly independent, the coefficients must be 0.
+    $\alpha_i - \beta_i = 0 \implies \alpha_i = \beta_i$.
 \end{proof}

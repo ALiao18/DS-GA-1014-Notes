@@ -24,37 +24,24 @@ Taylor approximation:
 \end{definition}
 
 \begin{definition}[Hessian Matrix]
-    For scalar-valued functions $f: \mathbb{R}^n \rightarrow \mathbb{R}$, the \textbf{Hessian} is the matrix of second derivatives:
-    \[ H(x) = \nabla^2f(x) \in \mathbb{R}^{n \times n} \quad \text{where} \quad H_{ij} = \frac{\partial^2 f}{\partial x_i \partial x_j} \]
+    For scalar-valued functions $f: \mathbb{R}^n \rightarrow \mathbb{R}$, the \textbf{Hessian} $\nabla^2 f(x)$ is the $n \times n$ matrix of partial derivatives:
+    \[ (\nabla^2 f(x))_{ij} = \frac{\partial^2 f}{\partial x_i \partial x_j}(x) \]
 \end{definition}
-
-\begin{theorem}[Schwarz's Theorem]
-    If $f: \mathbb{R}^n \rightarrow \mathbb{R}$ is twice differentiable with continuous second partial derivatives, then the Hessian is symmetric:
-    \[ \frac{\partial^2 f}{\partial x_i \partial x_j} = \frac{\partial^2 f}{\partial x_j \partial x_i} \]
-\end{theorem}
-
-\subsubsection{Taylor's Formula (Second Order)}
-\[ f(x+h)=f(x)+\langle \nabla f(x),h  \rangle + \frac{1}{2}h^{\top}\nabla^{2}f(x)h+o(\lVert h \rVert^2) \]
 
 \subsection{Convexity Definitions}
 
-\subsubsection{Convex Sets}
-\begin{definition}[Convex Set]
-    A set $S \subset \mathbb{R}^n$ is \textbf{convex} if $\forall x,y\in S, \forall \alpha\in [0,1]$,
-    \[ \alpha x + (1-\alpha)y \in S \]
-\end{definition}
-\begin{example}
-    Subspaces of $\mathbb{R}^n$ and Norm balls $B(r)=\{ x \mid \lVert x \rVert \leq r\}$ are convex sets.
-\end{example}
-
-\subsubsection{Convex Functions}
 \begin{definition}[Convex Function]
-    A function $f: \mathbb{R}^n \rightarrow \mathbb{R}$ is \textbf{convex} if $\forall x,y\in \mathbb{R}^n, \forall \alpha\in [0,1]$:
-    \[ f(\alpha x+(1-\alpha)y)\leq \alpha f(x)+(1-\alpha)f(y) \]
+    A function $f: \mathbb{R}^n \to \mathbb{R}$ is \textbf{convex} if for all $x,y \in \mathbb{R}^n$ and $\alpha \in [0,1]$:
+    \[ f(\alpha x + (1-\alpha)y) \leq \alpha f(x) + (1-\alpha)f(y) \]
+\end{definition}
+
+\begin{definition}[Strictly Convex]
+    A function is \textbf{strictly convex} if the inequality is strict for $x \neq y$ and $\alpha \in (0,1)$.
 \end{definition}
 Intuitively, the function always curves upwards. $f$ is concave if $-f$ is convex.
-
-\begin{proposition}
+\\ \\
+\begin{proposition} 
+    We say that: 
     \begin{enumerate}
         \item Linear maps are both convex and concave.
         \item Norms are convex (Triangle Inequality).
@@ -76,6 +63,7 @@ Intuitively, the function always curves upwards. $f$ is concave if $-f$ is conve
 
 \begin{proposition}[Hessian Condition]
     Let $f$ be twice-differentiable. Then $f$ is convex $\iff \nabla^{2}f(x)$ is Positive Semi-Definite (PSD) for all $x$.
+    For strict convexity, we require $\nabla^2 f(x)$ to be Positive Definite.
 \end{proposition}
 
 \subsection{Jensen's Inequality}
@@ -83,10 +71,12 @@ Intuitively, the function always curves upwards. $f$ is concave if $-f$ is conve
 \begin{theorem}[Jensen's Inequality]
     Let $f$ be a convex function. For $x_i \in \mathbb{R}^n$ and weights $\alpha_i \geq 0$ summing to 1:
     \[ f\left( \sum \alpha_{i}x_{i} \right)\leq\sum \alpha_{i}f(x_{i}) \]
-    For a random variable $X$:
-    \[ f(\mathbb{E}[X])\leq\mathbb{E}[f(X)] \]
+    For a random variable $X$ taking values in $\mathbb{R}^n$:
+    \[ f(\mathbb{E}[X]) \leq \mathbb{E}[f(X)] \]
 \end{theorem}
+One result of Jensen's inequality is that the variance is always non-negative ($Var(X) = \mathbb{E}[X^2] - (\mathbb{E}[X])^2 \geq 0$ since $x^2$ is convex).
 
-\begin{example}[Entropy]
-    For a random variable $X$, entropy is $H(X)=\sum p_{i}\log(1/p_i)$. Since $\log$ is concave, Jensen's inequality applies in reverse, showing $H(X) \leq \log(k)$ (Uniform distribution maximizes entropy).
-\end{example}
+\subsubsection*{Example: Entropy}
+Consider a random variable $X$ taking values in $\{1, \dots, k\}$. Let $p_i = P(X=i)$.
+The entropy is defined as $H(X) = - \sum p_i \log(p_i) = \mathbb{E}[-\log(p(X))]$.
+Since $-\log(x)$ is convex, we can apply Jensen's inequality to bound the entropy.

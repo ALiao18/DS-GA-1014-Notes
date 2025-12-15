@@ -9,82 +9,41 @@
 
 \begin{goal}
 \textbf{Motivation:} How do we generalize the spectral theorem decomposition to generic matrices $A \in \mathbb{R}^{n\times m}$?
-Since $A$ is now rectangular, $Av_{i}=\lambda_{i}v_{i}$ no longer has any meaning since the inner spaces no longer match up between $A, v_{i}$.
+Since $A$ is now rectangular, $Av_{i}=\lambda_{i}v_{i}$ no longer has any meaning.
 \end{goal}
 
 \begin{idea}
 Let $Au_{i}=\sigma_{i}v_{i}$ for another orthonormal family $v_{1},\dots,v_{m}$.
 So, we know $A$ is an operation from $\mathbb{R}^{m} \to \mathbb{R}^{n}$ such that $Av_{i}=\sigma_{i}u_{i}$.
-\begin{align}
-Ax &= A\left( \sum_{i=1}^{m}\langle x,v_{i}  \rangle v_{i}\right) = \sum_{i=1}^{m}\langle x,v_{i}  \rangle Av_{i} \\
-   &= \sum_{i=1}^{m}\sigma_{i}\langle x,v_{i}  \rangle u_{i} = \sum_{i=1}^{m}\sigma_{i}(v_{i}^{\top}x)u_{i} \\
-   &= \left( \sum_{i=1}^{m}\sigma_{i}u_{i}v_{i}^{\top} \right) x
-\end{align}
-Therefore, $A = \sum_{i=1}^{m}\sigma_{i}u_{i}v_{i}^{\top}$.
 \end{idea}
 
-Steps for linear combination:
-\begin{enumerate}
-    \item Decompose into eigenvector basis (rotate): $(\langle x,v_{i}  \rangle)_{i=1:m}$
-    \item Scale by eigenvalues: $(\sigma_{i}\langle x,v_{i}  \rangle)_{i=1:m}$
-    \item Transform output space: $\left( \sum_{i=1}^{m}\sigma_{i}\langle x_{i},v_{i}  \rangle u_{i}\right)$
-\end{enumerate}
+\textbf{Derivation:}
+$A^{\top}Av_i = \sigma_i A^{\top}u_i$. From the transpose, $A^{\top}u_i = \sigma_i v_i$.
+Thus $A^{\top}Av_i = \sigma_i^2 v_i$.
+\begin{itemize}
+    \item $v_i$ are eigenvectors of $A^{\top}A$.
+    \item $\sigma_i = \sqrt{\lambda_i(A^{\top}A)}$.
+    \item $u_i = \frac{Av_i}{\sigma_i}$.
+\end{itemize}
 
-\begin{theorem}[Singular Value Decomposition]
-Let $A\in \mathbb{R}^{n \times m}$. Then there exists two orthogonal matrices $U\in \mathbb{R}^{n \times n}$ and $V\in \mathbb{R}^{m \times m}$ and a matrix $\Sigma\in \mathbb{R}^{n \times m}$ such that $\Sigma_{1,1} \geq \Sigma_{2,2} \geq \dots \geq 0$ and $\Sigma_{i,j}=0$ for $i \neq j$ that verify $A=U\Sigma V^{\top}$.
+\begin{theorem}[SVD]
+    Any matrix $A \in \mathbb{R}^{n \times m}$ can be written as $A=U\Sigma V^{\top}$.
 \end{theorem}
 
-Notice that $\Sigma$ is a rectangular matrix. Since $A$ is rectangular, it isn't invertible and has a non-trivial kernel. The zero columns correspond to directions in $Ker(A)$ (Rank-Nullity theorem).
-
-\subsubsection{Proof Sketch}
-\begin{enumerate}
-    \item Establish orthogonality of $Av_i$: $\langle Av_{i},Av_{j} \rangle = \sigma_i^2$ if $i=j$, else 0.
-    \item Show $v_i$ are eigenvectors of $A^{\top}A$: $A^{\top}Av_{1}=\lambda_{1}v_{1}$.
-    \item Apply spectral theorem to symmetric $A^{\top}A$ to get orthonormal basis $\{v_i\}$.
-    \item Define left singular vectors $u_{i}=\frac{Av_{i}}{\lVert Av_{i} \rVert}$ and singular values $\sigma_{i}=\lVert Av_{i} \rVert$.
-\end{enumerate}
-
-\begin{remark}
-\begin{enumerate}
-    \item Right singular vectors $v_{i}$ are eigenvectors of $A^{\top}A\in \mathbb{R}^{m\times m}$, with eigenvalues $\lambda_{i}=\sigma^{2}_{i}$.
-    \item Left singular vectors $u_{i}$ are eigenvectors of $AA^{\top}\in \mathbb{R}^{n \times n}$, with eigenvalues $\lambda_{i}=\sigma_{i}^{2}$.
-    \item If $A$ is symmetric, then $u_{i}=v_{i}$.
-\end{enumerate}
-\end{remark}
-
-\subsubsection{Non-negative singular values and sign instability}
-Singular values $\sigma_{i}=\lVert Av_{i} \rVert$ are defined by norms and measure scaling, thus are non-negative.
-Since $u_{i}=\frac{Av_{i}}{\sigma_{i}}$, flipping the sign of $v_{i}$ flips the sign of $u_{i}$. Thus $(v_{i},u_{i})$ and $(-v_{i},-u_{i})$ are both valid pairs.
-
 \subsection{Graphs and Graph Laplacian}
-Note that we are assuming \textit{undirected graphs}.
+Let $G=(V, E)$ be a graph with $n$ vertices.
+\begin{itemize}
+    \item \textbf{Adjacency Matrix} $A$: $A_{ij}=1$ if $(i,j) \in E$, else 0.
+    \item \textbf{Degree Matrix} $D$: Diagonal matrix with $D_{ii} = \deg(i)$.
+    \item \textbf{Laplacian} $L$: $L = D - A$.
+\end{itemize}
 
-\begin{definition}[Adjacency Matrix]
-    The adjacency matrix $A$ of graph $G$ is the $n \times n$ matrix with entries:
-    \[
-    A_{ij}=\begin{cases} 1 & \text{if edges between nodes } i \text{ and } j \\ 0 & \text{otherwise} \end{cases}
-    \]
-\end{definition}
-
-\begin{definition}[Degree Matrix]
-    The degree matrix $D\in \mathbb{R}^{n\times n}$ is the diagonal matrix with $D_{i,i} = deg(i)$.
-\end{definition}
-
-\begin{definition}[Graph Laplacian]
-    The Laplacian matrix of $G$ is defined as $L=D-A$.
-\end{definition}
-
-\begin{proposition}
-    For the graph Laplacian $L$:
-    \[ \forall x\in \mathbb{R}^{n}, \quad x^{\top}Lx=\sum_{i \sim j}(x_{i}-x_{j})^{2} \]
-    This measures smoothness w.r.t. the graph (nodes linked by an edge are similar).
-\end{proposition}
-
-\subsubsection{Properties of the Laplacian}
+\subsubsection{Properties of L}
 \begin{enumerate}
-    \item \textbf{Symmetric:} Since $D$ and $A$ are symmetric.
-    \item \textbf{Positive Semi-Definite (PSD):} $x^{\top}Lx \geq 0$, so $\lambda_{i}\geq 0$.
-    \item \textbf{Non-invertible:} $L$ always has eigenvalue 0 with eigenvector $v_1 = \frac{1}{\sqrt{n}}(1,\dots,1)$ (constant vector). Thus $Ker(L)$ is not empty.
+    \item $L$ is symmetric.
+    \item $L$ is Positive Semi-Definite (PSD).
+    \item $\forall x \in \mathbb{R}^n, x^{\top}Lx = \sum_{(i,j) \in E} (x_i - x_j)^2$.
+    \item $Ker(L)$ contains the vector $\mathbf{1}$ (all ones), since sum of rows is 0.
 \end{enumerate}
 
 \begin{theorem}[Algebraic Connectivity]
@@ -112,16 +71,16 @@ Relax the constraints to $v \in \mathbb{R}^n$ with $\lVert v \rVert^2 = n$.
 This becomes the problem of finding the eigenvector for the second smallest eigenvalue, $v_2$.
 \end{idea}
 
-\subsubsection{Spectral Clustering Algorithm (2 Clusters)}
+\textbf{Algorithm (2 Clusters):}
 \begin{enumerate}
     \item Compute $v_{2}$, the second eigenvector of $L$.
     \item Set $x_{i}=v_{2}(i)$.
-    \item Define $S=\{ i \mid v_{2}(i) \geq 0 \}$ and $S^C=\{ i \mid v_{2}(i) < 0 \}$.
+    \item Define $S=\{ i \mid v_{2}(i) \geq 0 \}$, $S^C=\{ i \mid v_{2}(i) < 0 \}$.
 \end{enumerate}
 
-\subsubsection{Spectral Clustering Algorithm (k Clusters)}
+\subsubsection{Spectral Clustering: k clusters}
 \begin{enumerate}
-    \item Compute $v_{1},\dots,v_{k}$ of $L$.
-    \item Embed nodes as $x_{i}=(v_{2}(i),\dots,v_{k}(i))$.
-    \item Cluster $x_{1},\dots,x_{n}$ using k-means.
+    \item Compute $v_1, \dots, v_k$, the first $k$ eigenvectors of $L$.
+    \item Embed every node $i$ into $\mathbb{R}^k$ using the rows of $V = [v_1, \dots, v_k]$.
+    \item Run K-means clustering on these points in $\mathbb{R}^k$.
 \end{enumerate}

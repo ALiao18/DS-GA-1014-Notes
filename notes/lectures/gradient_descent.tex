@@ -1,2 +1,72 @@
 % !TEX root = ../main.tex
-\section{Gradient Descent} 
+\section{Gradient Descent}
+
+\subsection{Setup and Update Rule}
+
+Suppose we have an unconstrained optimization problem (note from last lecture we can turn constrained optimization problems into unconstrained problems via Lagrange multipliers).
+
+\begin{goal}
+Minimize a differentiable function $f: \mathbb{R}^n \rightarrow \mathbb{R}$.
+\end{goal}
+
+Starting from a point $x_{0}\in \mathbb{R}^{n}$, perform the updates
+\[
+x_{t+1}=x_{t}-\alpha_{t} \nabla f(x_{t}) \quad \text{($\alpha_t$ = step size)}
+\]
+
+Intuitively, gradient descent moves in the direction of steepest descent under the Euclidean norm.
+
+Recall the first-order Taylor expansion
+\[
+f(x_{t}+h)=f(x_{t})+\langle h,\nabla f(x_{t}) \rangle + o(\lVert h \rVert).
+\]
+Thus the inner product determines the first-order change of the function.
+
+Let $h=-\alpha_{t} \nabla f(x_{t})$. Then
+\[
+f(x_{t}+h)=f(x_{t})-\alpha_{t}\lVert \nabla f(x_{t}) \rVert^{2} + o(\alpha_t \|\nabla f(x_t)\|).
+\]
+Since the squared norm is nonnegative, taking a sufficiently small step size guarantees a decrease in the function value.
+
+In convex cases, gradient descent is guaranteed to find the global minimum. In most real-world problems, the objective is non-convex, so depending on initialization and step size, one is generally only guaranteed convergence to a local critical point.
+
+\subsection{Convergence Analysis for Convex Functions}
+Assume $f$ is convex and $L$-smooth ($\lVert \nabla f(x) - \nabla f(y) \rVert \leq L \lVert x-y \rVert$).
+With a fixed step size $\alpha \leq 1/L$, gradient descent converges at a rate of $O(1/t)$.
+\[ f(x_t) - f(x^*) \leq \frac{\lVert x_0 - x^* \rVert^2}{2\alpha t} \]
+
+\subsection{Improvements to Gradient Descent}
+
+\paragraph{Momentum.}
+When the condition number $\kappa=\frac{L}{\mu}$ is large, the gradient direction can be poorly aligned with the direction to the minimum.
+
+Momentum mimics a heavy ball:
+\[
+v_t = -\alpha_t \nabla f(x_t) + \beta_t v_{t-1}, \qquad x_{t+1}=x_t+v_t.
+\]
+
+\paragraph{Newton's Method.}
+Assume $f$ is $\mu$-strongly convex and $L$-smooth. Newton's method updates
+\[
+x_{t+1}=x_t-\nabla^2 f(x_t)^{-1}\nabla f(x_t).
+\]
+This corresponds to minimizing the second-order Taylor approximation.
+Solving for the critical point $h$ in the second order expansion yields the direction $h = -\nabla^2 f(x)^{-1} \nabla f(x)$.
+
+A related Newton's method is conceptually similar and is known as Newton's Method for Root Finding.
+Geometrically, it:
+\begin{enumerate}
+    \item Find the tangent of the current point.
+    \item Find where the tangent intersects 0.
+    \item Move there: $x_{t+1} = x_t - \frac{g(x_t)}{g'(x_t)}$ (Root finding for $\nabla f(x)=0$).
+\end{enumerate}
+
+Newton's method converges extremely fast (often $<10$ iterations), but requires $O(d^2)$ memory and $O(d^3)$ time per step to store and invert the Hessian.
+
+\paragraph{Stochastic Gradient Descent (SGD).}
+In machine learning, objectives often take the form
+\[
+f(\theta)=\frac{1}{n}\sum_{i=1}^{n} \ell (\theta, x_{i}, y_{i})
+\]
+Computing the full gradient takes $O(nd)$. SGD approximates the gradient by a single randomly chosen term:
+\[ \theta_{t+1} = \theta_t - \alpha_t \nabla_{\theta} \ell(\theta, x_{i_t}, y_{i_t}) \]

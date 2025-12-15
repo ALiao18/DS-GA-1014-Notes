@@ -27,53 +27,26 @@ There are many notions of dimensionality. The rank is one of them.
 \begin{enumerate}
     \item $rank(Id_{n})=dim(\mathbb{R}^{n})=n$.
     \item $rank(\begin{pmatrix} 1 & 2 \\ 3 & 4 \end{pmatrix})=2$ (vectors are linearly independent).
-    \item $rank(\begin{pmatrix} 1 & 2 & 1 \\ 0 & 0 & 1 \end{pmatrix}) \leq 2$.
+    \item $rank(\begin{pmatrix} 1 & 2 & 1 \\ 0 & 0 & 1 \end{pmatrix}) = 2$.
 \end{enumerate}
 
 \begin{proposition}[Rank of columns = Rank of rows]
-    Let $r_{1},\dots,r_{n}$ be the rows and $c_{1},\dots,c_{m}$ be the columns of $M$.
-    \[ rank(r_{1},\dots r_{n})=rank(c_{1},\dots c_{m})= rank(M) \]
+    Let $r_{1},\dots,r_{n} \in \mathbb{R}^{m}$ be the rows of $M$.
+    \[ rank(r_{1},\dots r_{n}) = rank(c_{1},\dots c_{m}) = rank(M) \]
 \end{proposition}
 
-\subsection{The Rank-Nullity Theorem}
+\subsection{Rank-Nullity Theorem}
 \begin{theorem}[Rank-Nullity]
-    Let $L: \mathbb{R}^{m}\to \mathbb{R}^{n}$ be a linear transformation.
-    Then:
-    \[ rank(L)+dim(Ker(L))=m \]
+    Let $L: \mathbb{R}^{k} \to \mathbb{R}^{n}$ be a linear map.
+    \[ \underbrace{dim(\mathbb{R}^{k})}_{\text{domain}} = \underbrace{dim(Ker(L))}_{\text{nullity}} + \underbrace{dim(\mathrm{Im}(L))}_{\text{rank}} \]
 \end{theorem}
 
 \begin{proof}
-    Let $v_{1},\dots v_{k}$ be a basis of $Ker(L)$ ($k=dim(Ker(L))$). Complete it with $v_{k+1},\dots,v_{m}$ into a basis of $\mathbb{R}^{m}$.
-    \begin{align}
-    \mathrm{Im}(L)&=\{ L(x),x \in \mathbb{R}^{m} \} \\
-                  &=\{ \alpha_{k+1}L(v_{k+1})+\dots+\alpha_{m}L(v_{m}) \mid \alpha_{k+1},\dots,\alpha_{m} \in \mathbb{R} \} \\
-                  &=Span(L(v_{k+1}),\dots,L(v_{m}))
-    \end{align}
-    To show $L(v_{k+1}),\dots,L(v_{m})$ are linearly independent:
-    Assume $\sum_{i=k+1}^m \alpha_i L(v_i) = 0$.
-    Then $L(\sum \alpha_i v_i) = 0$, so $\sum \alpha_i v_i \in Ker(L)$.
-    This implies $\sum_{i=k+1}^m \alpha_i v_i = \sum_{j=1}^k \beta_j v_j$.
-    Since $v_1, \dots, v_m$ is a basis, all coefficients must be zero.
-    Thus $L(v_{k+1}),\dots,L(v_{m})$ are independent.
-    So $rank(L) = m - k = m - dim(Ker(L))$.
-\end{proof}
-
-\subsection{Inequalities}
-Let $A \in \mathbb{R}^{n \times m}$ and $B \in \mathbb{R}^{m \times k}$.
-\begin{enumerate}
-    \item $rank(A)\leq \min(n, m)$.
-    \item $rank(AB) \leq \min(rank(A), rank(B))$.
-\end{enumerate}
-
-\begin{proof}
-    \textbf{Showing $rank(AB)\leq rank(A)$:}
-    $\mathrm{Im}(AB)=\{ ABx, x \in \mathbb{R}^{k} \} \subseteq \mathrm{Im}(A)$.
-    Since the subspace is contained, the dimension is smaller or equal.
-
-    \textbf{Showing $rank(AB)\leq rank(B)$:}
-    We show $Ker(B) \subseteq Ker(AB)$.
-    Let $x \in Ker(B) \implies Bx=0 \implies ABx=A(0)=0 \implies x \in Ker(AB)$.
-    Since $Ker(B) \subseteq Ker(AB)$, $dim(Ker(B)) \leq dim(Ker(AB))$.
+    \textbf{Inequality 2:} $rank(AB) \leq \min(rank(A), rank(B))$.
+    Showing $rank(AB) \leq rank(B)$:
+    Let $L_A, L_B$ be linear maps for $A$ and $B$.
+    $Ker(B) \subseteq Ker(AB)$.
+    Thus $dim(Ker(B)) \leq dim(Ker(AB))$.
     By Rank-Nullity: $rank(AB) = k - dim(Ker(AB)) \leq k - dim(Ker(B)) = rank(B)$.
 \end{proof}
 
@@ -91,18 +64,21 @@ Let $A \in \mathbb{R}^{n \times m}$ and $B \in \mathbb{R}^{m \times k}$.
 \begin{proof}
     \textbf{$1 \rightarrow 2$:} Let $y \in \mathbb{R}^{n}$. $y=M(M^{-1}y)$, so $y \in \mathrm{Im}(M)$. Thus $\mathrm{Im}(M)=\mathbb{R}^n$, so $rank(M)=n$.
     \textbf{$2 \rightarrow 3$:} From Rank-Nullity, $dim(Ker(M))=n-rank(M)=0$.
-
     \textbf{$3 \rightarrow 4$:}
     Existence: $dim(\mathrm{Im}(M)) = n - dim(Ker(M)) = n$, so $\mathrm{Im}(M)=\mathbb{R}^n$.
-    Uniqueness: If $Mx=Mx'$, then $M(x-x')=0 \implies x-x' \in Ker(M)=\{0\} \implies x=x'$.
-    \textbf{$4 \rightarrow 1$:} Property 4 implies $M$ is a bijection. Construct $M^{-1}$ using the unique pre-images of the canonical basis.
+    Uniqueness: If $Mx=Mx'$, then $M(x-x')=0 \implies x-x' \in Ker(M)=\{0\}$.
 \end{proof}
 
-\subsection{Transpose of a matrix}
-Let $M \in \mathbb{R}^{ n \times m}$.
-We define its transpose $M^{\top}\in \mathbb{R}^{m \times n }$ by $M^{\top}_{i,j}=M_{j,i}$.
-\begin{itemize}
+\subsection{Transpose of a Matrix}
+Let $M \in \mathbb{R}^{ n \times m}$. We define its transpose $M^{\top}\in \mathbb{R}^{m \times n }$ by $M^{\top}_{i,j}=M_{j,i}$ for all $i \in \{ 1,\dots,m \}$ and $j \in \{ 1,\dots,n \}$.
+\begin{enumerate}
+    \item $(M^{\top})^{\top}=M$.
+    \item The mapping $M \mapsto M^{\top}$ is linear, so it is closed under addition and scalar multiplication.
+\end{enumerate}
+
+\subsubsection{Properties}
+\begin{enumerate}
     \item $\forall A \in \mathbb{R}^{n \times m}, rank(A)=rank(A^{\top})$.
-    \item $(AB)^{\top}=B^{\top}A^{\top}$.
-    \item A matrix is \textbf{symmetric} if $A = A^{\top}$.
-\end{itemize}
+    (Rank of A = Rank of columns of A = Rank of rows of A transpose = Rank of A transpose).
+    \item Let $A \in \mathbb{R}^{n \times m}, B \in \mathbb{R}^{m \times p}$. Then $(AB)^{\top} = B^{\top}A^{\top}$.
+\end{enumerate}
