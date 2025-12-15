@@ -20,7 +20,7 @@
     \end{enumerate}
 \end{proposition}
 
-\begin{proof}[Proof Sketch]
+\begin{proof}[Heuristic Proof]
     We define a local minimizer as a point where, under some interval, there is no direction to go from $x$ that ends in a function value lesser than $x$.
     Using the first order Taylor expansion to approximate $f(x+h):$
     \begin{align*}
@@ -71,7 +71,7 @@ Constrained optimization problems take the form:
     \item $\min_{x}\lVert Ax-y \rVert^{2} \text{ s.t. } \lVert x \rVert \leq r$. Here $g_{1}(x)=\lVert x \rVert-r$.
 \end{itemize}
 
-\subsection{Feasible Points}
+\subsubsection{Feasible Points}
 
 \begin{definition}[Feasible Set]
     A point $x\in \mathbb{R}^n$ is \textbf{feasible} if it satisfies all constraints.
@@ -86,7 +86,7 @@ Constrained optimization problems take the form:
 
 When the optimality condition $\nabla f(x)=0$ doesn't hold, what conditions characterize solutions?
 
-\subsection{First Order Optimality Condition}
+\subsubsection{First Order Optimality Condition}
 Consider the problem: $\min_{x}f(x) \text{ subject to } g(x) \leq 0$.
 The optimal point $x^*$ can be either inside the feasible set or on the boundary.
 
@@ -109,7 +109,7 @@ Formally, if $g(x^*)=0$, then $f(x^*)+\lambda \nabla g(x^*)=0$ for some $\lambda
     Moreover, for all $i\in \{ 1,\dots,m \}$, if $g_{i}(x)<0$, then $\lambda_{i}=0$.
 \end{theorem}
 
-\subsubsection*{Example}
+\subsubsection{Example}
 Minimize $\langle x,u \rangle$ subject to $\lVert x \rVert^{2}=1$ ($u \neq 0$).
 Let $h(x)=\lVert x \rVert^{2}-1$, so $\nabla h(x)=2x$.
 \[ u+\nu 2x=0 \implies x=-\frac{1}{2\nu} u \]
@@ -119,11 +119,11 @@ Solution: $x = \pm \frac{u}{\lVert u \rVert}$.
 Checking values: $f(x) = \langle \pm \frac{u}{\lVert u \rVert}, u \rangle = \pm \lVert u \rVert$.
 The minimum is $-\lVert u \rVert$ at $x = -\frac{u}{\lVert u \rVert}$.
 
-\section{Convex Constrained Optimization}
+\subsection{Convex Constrained Optimization}
 
 A constrained optimization problem is \textbf{convex} when $f, g_{1},\dots,g_{m}$ are convex functions and $h_{1},\dots,h_{p}$ are affine functions.
 
-\subsection{Karush-Kuhn-Tucker (KKT) Theorem}
+\subsubsection{Karush-Kuhn-Tucker (KKT) Theorem}
 
 \begin{theorem}[KKT Conditions]
     Assume the problem is convex and Slater's condition holds (exists a feasible point where strict inequality holds). Then $x$ is a solution \textbf{if and only if} $x$ is feasible and there exists Lagrange multipliers $\lambda_{1},\dots, \lambda_{m} \geq 0, \nu_{1},\dots,\nu_{p}\in \mathbb{R}$ such that:
@@ -135,7 +135,7 @@ A constrained optimization problem is \textbf{convex} when $f, g_{1},\dots,g_{m}
     \end{enumerate}
 \end{theorem}
 
-\subsubsection{Example: Ridge Regression}
+\subsubsection*{Example: Ridge Regression}
 \begin{align*}
 \text{minimize } & \lVert Ax-y \rVert^{2} \\
 \text{subject to } & \lVert x \rVert ^{2} \leq r^{2}
@@ -155,7 +155,7 @@ There are two cases:
     \item $\lambda > 0 \implies \lVert x \rVert = r$.
 \end{enumerate}
 
-\subsubsection{Example: Projection onto subspace}
+\subsubsection*{Example: Projection onto subspace}
 Let $u,v\in \mathbb{R}^n \text{ s.t. } \lVert v \rVert=1$.
 \begin{align*}
 \text{minimize } & \lVert x-u \rVert^{2} \\
